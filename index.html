@@ -119,7 +119,7 @@
         .team-card-box:hover { transform: scale(1.02); }
         .team-name { font-size: 1.15rem; font-weight: bold; margin-bottom: 8px; }
         .team-num { font-size: 2.8rem; font-weight: 900; font-family: 'Arial Rounded MT Bold', sans-serif; margin-bottom: 8px; }
-        .team-members { font-size: 0.95rem; color: #747d8c; line-height: 1.6; height: 70px; overflow-y: auto; padding: 0 5px; }
+        .team-members { font-size: 0.95rem; color: #747d8c; line-6heigt: 1.6; height: 70px; overflow-y: auto; padding: 0 5px; }
 
         .cb { color: #48dbfb; } .cg { color: #ff7675; } .cn { color: #8395a7; }
 
@@ -182,18 +182,15 @@
         /* 結局全螢幕 */
         .result-screen { display: none; position: fixed; top:0; left:0; width:100%; height:100%; z-index: 4000; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 20px; box-sizing: border-box; }
         .res-title { font-size: 5.5rem; font-weight: 900; margin-bottom: 25px; text-shadow: 0 8px 25px rgba(0,0,0,0.12); font-family: 'Arial Rounded MT Bold', sans-serif; }
-        .res-sub { font-size: 2.2rem; font-weight: bold; background: rgba(255,255,255,0.22); padding: 25px 40px; border-radius: 36px; backdrop-filter: blur(8px); line-height: 1.6; max-width: 750px; border: 2px solid rgba(255,255,255,0.3); }
+        .res-sub { font-size: 2.2rem; font-weight: bold; background: rgba(255,255,255,0.22); padding: 25px 40px; border-radius: 36px; backdrop-filter: blur(8px); line-height: 1.6; max-width: 720px; border: 2px solid rgba(255,255,255,0.3); }
         .bg-b { background: linear-gradient(135deg, #74b9ff, #0984e3); }
         .bg-g { background: linear-gradient(135deg, #ff7675, #d63031); }
 
-        /* ================== 📱 手機行動端 RWD 排版大幅度優化 ================== */
+        /* 📱 手機行動端 RWD 排版大幅度優化 */
         @media (max-width: 767px) {
             body { padding: 15px 10px; }
-            
             h1 { font-size: 1.8rem; margin-bottom: 5px; }
             .sub-tag { font-size: 0.9rem; padding: 6px 18px; }
-            
-            /* 看板改為直式緊湊型，省去手機往下滑的空間 */
             .status-board { padding: 15px; margin-bottom: 20px; border-radius: 24px; }
             .board-grid { grid-template-columns: 1fr; gap: 10px; }
             .team-card-box { padding: 12px 10px; border-radius: 18px; display: flex; align-items: center; justify-content: space-between; text-align: left; }
@@ -201,34 +198,24 @@
             .team-num { margin-bottom: 0; font-size: 1.6rem; width: 20%; text-align: right; }
             .team-members { height: 32px; width: 50%; font-size: 0.8rem; text-align: right; overflow-y: auto; }
             .ratio-bar-wrapper { height: 14px; margin-top: 15px; }
-
-            /* 手機版快捷轉隊按鈕加大、好按 */
             .change-team-zone { padding: 12px 15px; margin-bottom: 25px; flex-wrap: wrap; width: 90%; border-radius: 30px; }
             .change-team-zone span { font-size: 0.9rem; width: 100%; text-align: center; margin-bottom: 5px; }
             .mini-btn { padding: 10px 16px; font-size: 0.85rem; flex: 1; text-align: center; }
-
-            /* 任務卡改為流線單欄位大長條 */
             .mission-zone { margin-bottom: 25px; }
             .mission-title { font-size: 1.05rem; margin-bottom: 10px; }
             .mission-grid { grid-template-columns: 1fr; gap: 10px; }
             .mission-card { padding: 14px; font-size: 0.95rem; border-radius: 16px; }
-
-            /* 線索卡切換為單欄，並壓縮高度防冗長 */
             .clue-grid { grid-template-columns: 1fr; gap: 15px; margin-bottom: 30px; }
             .clue-card { min-height: 180px; padding: 15px; border-radius: 22px; }
             .c-icon { font-size: 2.2rem; margin-bottom: 2px; }
             .c-badge { font-size: 0.75rem; padding: 3px 10px; margin-bottom: 8px; }
             .c-text { font-size: 0.95rem; margin-bottom: 12px; }
             .btn-view { padding: 10px; font-size: 0.95rem; border-radius: 14px; }
-            
-            /* 後台控制板直式優化 */
             .host-control-panel { padding: 15px; }
             .control-grid { grid-template-columns: 1fr; gap: 10px; }
             .control-row { flex-direction: column; gap: 8px; text-align: center; padding: 10px; }
             .ctrl-btn { padding: 6px 10px; font-size: 0.8rem; }
             .btn-master-reset { width: 100% !important; font-size: 0.95rem; padding: 12px 10px; }
-            
-            /* 結局畫面手機端自適應 */
             .res-title { font-size: 3.2rem; }
             .res-sub { font-size: 1.4rem; padding: 15px 20px; border-radius: 24px; }
         }
@@ -303,7 +290,7 @@
         </div>
     </div>
 
-    <!-- 六大核心密碼牆 (完美校正線索6所有標籤，統一UI與核心函式) -->
+    <!-- 六大核心密碼牆 -->
     <div class="clue-grid">
         <div class="clue-card" id="card1">
             <div class="c-icon">🗺️</div><div class="c-badge">線索 1</div>
@@ -318,6 +305,7 @@
             <div class="card-status-text" id="status2" style="color:#95a5a6">等待主辦人分發權限</div>
         </div>
         <div class="clue-card" id="card3">
+            <div class="clue-card" id="card3">
             <div class="c-icon">👶</div><div class="c-badge">線索 3</div>
             <div class="c-text">【大寶的玄學直覺】<br>大寶最近狂摸肚子都喊什麼？</div>
             <button class="btn-view" onclick="triggerOpenClue(3)">🔒 閱讀答案</button>
@@ -330,8 +318,8 @@
             <div class="card-status-text" id="status4" style="color:#95a5a6">等待主辦人分發權限</div>
         </div>
         <div class="clue-card" id="card5">
-            <div class="c-icon">🧮</div><div class="c-badge">線索 5</div>
-            <div class="c-text">【七七四十九問娘口訣】<br>古老算學公式結果</div>
+            <div class="c-icon">👀</div><div class="c-badge">線索 5</div>
+            <div class="c-text">【肚型外觀傳說】<br>形狀較尖、突出懷男；渾圓飽滿懷女。</div>
             <button class="btn-view" onclick="triggerOpenClue(5)">🔒 閱讀答案</button>
             <div class="card-status-text" id="status5" style="color:#95a5a6">等待主辦人分發權限</div>
         </div>
@@ -343,7 +331,7 @@
         </div>
     </div>
 
-    <!-- 終極解密大按鈕 -->
+    <!-- 直接揭曉大按鈕 -->
     <button class="btn-final-reveal" id="btnFinalReveal" onclick="directRevealResult()">✨ 揭曉歷史時刻，直接開獎！ ✨</button>
 
     <!-- 隱藏式主辦人後台 -->
@@ -393,7 +381,7 @@
             2: "解析：恭喜贏家解鎖親密福利！答案就是：【本隊所有女性隊員，現在可以直接上台實際觸摸媽媽的肚子，親自感受二寶的心靈感應！】🤰",
             3: "解析：大寶的預言直覺發威！他每次摸著媽媽的肚子，都非常肯定且興奮地狂喊：『是妹妹！肚子裡面是妹妹！』👶（🍹 楊桃芝隊 大加分！）",
             4: "解析：全場親友一起作證！媽媽從懷孕到現在，氣色一直都超好、皮膚亮晶晶，『一直都超級美！』✨ 依照外貌學，這絕對是貼心小公主的特徵呀！",
-            5: "解析：經過繁雜的數學口訣『七七四十九，問娘何月有...』，口訣算出來的終極數字，答案明明白白指向了【男孩】！🖋️ 楊墨水再次獲得強力佐證！",
+            5: "解析：經過現場親友的銳利眼神鑑定，媽媽這胎的肚子形狀較尖、而且明顯往前突出！答案就是【肚型尖】！在傳統說法中，這可是男寶【楊墨水】的經典招牌特徵喔！🖋️",
             6: "解析：口味驚天大洗牌！媽媽前三個月變得完全不愛喝原本最愛的咖啡（怕苦），對甜食也有些排斥，但是酸的和辣的都很能吃！酸辣皆收、苦甜不要，台下偵探們開始燒腦了吧！"
         };
 
