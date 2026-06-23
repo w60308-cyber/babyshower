@@ -165,4 +165,408 @@
         .lock-card { background: white; border: 2px solid var(--card-border); border-radius: 24px; padding: 25px 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: space-between; align-items: center; min-height: 280px; box-sizing: border-box; transition: all 0.3s ease; }
         .lock-card:hover { transform: translateY(-5px); border-color: #a29bfe; }
         .lock-card .q-icon { font-size: 2.8rem; margin-bottom: 5px; }
-        .lock-card .q-number { font-size: 0.95rem; font-weight: bold; color: #6c
+        .lock-card .q-number { font-size: 0.95rem; font-weight: bold; color: #6c5ce7; background: #eeecef; padding: 4px 14px; border-radius: 15px; margin-bottom: 12px; }
+        .lock-card .q-text { font-size: 1.1rem; font-weight: bold; color: #2d3436; line-height: 1.6; text-align: center; flex-grow: 1; display: flex; align-items: center; justify-content: center; white-space: pre-line; }
+        .unlock-btn { background: linear-gradient(135deg, #a29bfe, #6c5ce7); color: white; border: none; padding: 10px 20px; font-size: 1.05rem; font-weight: bold; border-radius: 12px; cursor: pointer; margin-top: 15px; width: 100%; }
+        .lock-card.unlocked { background: #fafafa; border-color: #b2bec3; opacity: 0.85; }
+        .lock-card.unlocked .q-number { background: #b2bec3; color: white; }
+        .lock-card.unlocked .unlock-btn { background: #b2bec3; }
+
+        /* 終極與彈窗 */
+        .reveal-btn { background: linear-gradient(135deg, #ff7675, #6c5ce7); color: white; border: none; padding: 18px 50px; font-size: 1.6rem; font-weight: bold; border-radius: 50px; cursor: pointer; display: none; }
+        .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(45, 52, 54, 0.9); justify-content: center; align-items: center; }
+        .modal-content { background-color: white; padding: 40px; border-radius: 30px; max-width: 650px; width: 85%; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+        .modal-title { font-size: 2rem; color: #6c5ce7; font-weight: bold; margin-bottom: 25px; }
+        .game-desc-box { font-size: 1.3rem; line-height: 1.7; color: #2d3436; background: #fffdf0; padding: 25px; border-radius: 20px; border: 2px solid #f1c40f; margin-bottom: 25px; text-align: left; }
+        .answer-secret-box { display: none; font-size: 1.5rem; line-height: 1.7; color: #2d3436; background: #fff9f9; padding: 30px; border-radius: 20px; border: 3px dashed #ff7675; margin-bottom: 30px; text-align: left; }
+        .answer-secret-box::before { content: "🤫 贏家特權悄悄話："; display: block; font-weight: bold; color: #ff7675; margin-bottom: 10px; font-size: 1.2rem; }
+        .action-btn { color: white; border: none; padding: 14px 35px; font-size: 1.2rem; border-radius: 15px; cursor: pointer; margin: 8px; font-weight: bold; }
+        .secret-btn { background: linear-gradient(135deg, #ff7675, #6c5ce7); }
+        .close-btn { background-color: #2d3436; }
+        .countdown-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2d3436; color: white; z-index: 200; justify-content: center; align-items: center; font-size: 12rem; font-weight: bold; }
+        .result-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 300; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; }
+        .result-title { font-size: 5.5rem; font-weight: 900; margin-bottom: 20px; text-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+        .result-sub { font-size: 2.3rem; font-weight: bold; background: rgba(255, 255, 255, 0.2); padding: 15px 40px; border-radius: 40px; backdrop-filter: blur(5px); line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-box">
+            <h2 style="color: #4a4a4a; margin-bottom: 5px;">👶 歡迎參加派對 🔍</h2>
+            <p style="color: #7f8c8d; margin-bottom: 25px;">請輸入您的名字以連線進入解密牆</p>
+            <input type="text" id="playerNameInput" placeholder="請輸入您的真實姓名/暱稱" maxlength="10">
+            
+            <div class="gender-select-title">🎯 請選擇您目前的直覺預測：</div>
+            <div class="choice-btn-group">
+                <button class="choice-btn btn-boy" onclick="selectInitialTeam('boy')">💙 押寶：楊墨水 (🖋️)</button>
+                <button class="choice-btn btn-girl" onclick="selectInitialTeam('girl')">💗 押寶：楊桃芝 (🍹)</button>
+                <button class="choice-btn btn-neutral" onclick="selectInitialTeam('neutral')">⚪ 中立：觀望吃瓜中 (🍿)</button>
+            </div>
+            
+            <button class="action-btn secret-btn" style="width: 100%; margin:0;" onclick="joinParty()">🚀 進入派對解密牆</button>
+        </div>
+    </div>
+
+    <div class="header-zone">
+        <h1>🌈 二寶降臨：全場極速解密牆 🔍</h1>
+        <div class="subtitle">到底是 <span class="b-name">🖋️ 楊墨水</span> 還是 <span class="g-name">🍹 楊桃芝</span> ？親友團大激戰！</div>
+    </div>
+
+    <div class="dashboard">
+        <div class="poll-title">📊 雲端網頁實時同步：全場預測分布名單</div>
+        <div class="poll-columns">
+            <div class="column-box">
+                <div class="box-title c-boy">💙 楊墨水 隊</div>
+                <div class="box-count c-boy" id="count_boy">0 人</div>
+                <div class="box-list" id="list_boy">尚無人選擇</div>
+            </div>
+            <div class="column-box">
+                <div class="box-title c-girl">💗 楊桃芝 隊</div>
+                <div class="box-count c-girl" id="count_girl">0 人</div>
+                <div class="box-list" id="list_girl">尚無人選擇</div>
+            </div>
+            <div class="column-box">
+                <div class="box-title c-neutral">⚪ 吃瓜中立隊</div>
+                <div class="box-count c-neutral" id="count_neutral">0 人</div>
+                <div class="box-list" id="list_neutral">尚無人選擇</div>
+            </div>
+        </div>
+        <div class="bar-container">
+            <div class="bar-boy" id="bar_boy" style="width: 33.3%"></div>
+            <div class="bar-girl" id="bar_girl" style="width: 33.3%"></div>
+            <div class="bar-neutral" id="bar_neutral" style="width: 33.3%"></div>
+        </div>
+    </div>
+
+    <div id="changeTeamZone" class="change-team-zone">
+        <span>🔄 隨時見風轉隊：</span>
+        <button class="mini-btn m-boy" id="mb_boy" onclick="changeCurrentTeam('boy')">投墨水</button>
+        <button class="mini-btn m-girl" id="mb_girl" onclick="changeCurrentTeam('girl')">投桃芝</button>
+        <button class="mini-btn m-neutral" id="mb_neutral" onclick="changeCurrentTeam('neutral')">選中立</button>
+    </div>
+
+    <div class="game-section">
+        <div class="section-title">🎮 本日特派任務：三大黃金關卡（點擊看說明）</div>
+        <div class="game-grid">
+            <button class="game-card" onclick="openGameModal(1)">📏 第一關：媽媽肚圍超級盲猜</button>
+            <button class="game-card" onclick="openGameModal(2)">🎬 第二關：大寶心機讀心術</button>
+            <button class="game-card" onclick="openGameModal(3)">🎤 第三關：神鬼兒歌接唱填空</button>
+        </div>
+    </div>
+
+    <div class="grid-container">
+        <div class="lock-card" id="card1">
+            <div class="q-icon">🗺️</div>
+            <div class="q-number">線索 1</div>
+            <div class="q-text">【神祕的東方清宮圖】受孕月份預測性別。這胎算出來的結果是？</div>
+            <button class="unlock-btn" onclick="unlock(1)">🔒 贏家點此觀看答案</button>
+        </div>
+        <div class="lock-card" id="card2">
+            <div class="q-icon">🤰</div>
+            <div class="q-number">線索 2</div>
+            <div class="q-text">【二寶親密接觸特權】特定的人來摸媽媽的肚子，胎動會完全不一樣？</div>
+            <button class="unlock-btn" onclick="unlock(2)">🔒 贏家點此觀看答案</button>
+        </div>
+        <div class="lock-card" id="card3">
+            <div class="q-icon">👶</div>
+            <div class="q-number">線索 3</div>
+            <div class="q-text">【大寶的玄學讀心直覺】大寶最近常常摸肚子，他平時都大喊些什麼？</div>
+            <button class="unlock-btn" onclick="unlock(3)">🔒 贏家點此觀看答案</button>
+        </div>
+        <div class="lock-card" id="card4">
+            <div class="q-icon">✨</div>
+            <div class="q-number">線索 4</div>
+            <div class="q-text">【孕期顏值的驚人外貌學】『懷男變醜長痘，懷女變美發亮』。媽媽這幾個月是？</div>
+            <button class="unlock-btn" onclick="unlock(4)">🔒 贏家點此觀看答案</button>
+        </div>
+        <div class="lock-card" id="card5">
+            <div class="q-icon">🧮</div>
+            <div class="q-number">線索 5</div>
+            <div class="q-text">【七七四十九神祕問娘口訣】老口訣除去母生年計算出來的男女結果是？</div>
+            <button class="unlock-btn" onclick="unlock(5)">🔒 贏家點此觀看答案</button>
+        </div>
+        <div class="lock-card" id="card6">
+            <div class="q-icon">🍋</div>
+            <div class="q-number">線索 6</div>
+            <div class="q-text">【酸男辣女與口味大洗牌】不愛吃苦、排斥甜食，酸辣都吃代表什麼？</div>
+            <button class="unlock-btn" onclick="unlock(6)">🔒 贏家點此觀看答案</button>
+        </div>
+    </div>
+
+    <button class="reveal-btn" id="revealBtn" onclick="startCountdown()">✨ 答案就在眼前，啟動終極倒數！ ✨</button>
+
+    <div class="modal" id="gameModal">
+        <div class="modal-content">
+            <div class="modal-title" id="gameModalTitle">關卡名稱</div>
+            <div class="game-desc-box" id="gameModalDesc">關卡說明細節...</div>
+            <button class="action-btn close-btn" onclick="closeGameModal()">關閉，開始挑戰！</button>
+        </div>
+    </div>
+
+    <div class="modal" id="clueModal">
+        <div class="modal-content">
+            <div class="modal-title" id="modalTitle">🔑 贏家專屬悄悄話時間</div>
+            <button class="action-btn secret-btn" id="secretBtn" onclick="revealSecretAnswer()">🔓 贏家代表點此解密（請把螢幕轉向代表）</button>
+            <div id="clueAnswerSecret" class="answer-secret-box">這是隱藏的秘密答案...</div>
+            <br>
+            <button class="action-btn close-btn" id="closeModalBtn" onclick="closeModal()">看完關閉</button>
+        </div>
+    </div>
+
+    <div class="countdown-overlay" id="countdownOverlay">5</div>
+    <div class="result-overlay" id="resultOverlay">
+        <div class="result-title" id="resultTitle">It's...</div>
+        <div class="result-sub" id="resultSub">歡迎二寶來到我們家！✨</div>
+    </div>
+
+    <script>
+        var supabaseClient = null;
+        var channel = null;
+        
+        try {
+            var sbUrl = "https://gqfscitqhywreujgskdr.supabase.co";
+            var sbKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxZnNjaXRxaHl3cmV1amdza2RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTU2OTAwMDAsImV4cCI6MjAyNzI2MDAwMH0.1vT8_pX9eJkW3i-FmN8vXn4rVp-7XgXW4z6bX1Y0ZQw";
+            if (typeof supabase !== "undefined" && supabase !== null) {
+                supabaseClient = supabase.createClient(sbUrl, sbKey);
+            }
+        } catch(e) {
+            console.log("Supabase 載入異常");
+        }
+
+        var BABY_GENDER = "girl"; 
+        var answers = {
+            1: "解析：經過爸爸媽媽嚴密的虛歲與月份對照，清宮圖最終計算出來的答案是：【男生】！🖋受孕月份結果為男寶！",
+            2: "解析：恭喜贏家解鎖隱藏福利！答案就是：【本隊所有女性隊員，現在可以現場上台實際摸摸媽媽的肚子，親自感受二寶的魔力！】🤰",
+            3: "解析：大寶每次摸媽媽的肚子，都非常肯定且興奮地狂喊：『是妹妹！肚子裡面是妹妹！』👶（大寶玄學發威，🍹 楊桃芝隊 大加分！）",
+            4: "解析：全場親友作證！媽媽從懷孕到現在，氣色一直都超好、皮膚亮晶晶，『一直都超級美！』✨ 依照外貌學來說，這根本就是小公主的特徵呀！",
+            5: "解析：經過繁雜的數學加減乘除，口訣最後算出來的餘數結果，明明白白指向了【男孩】！🖋 楊墨水再次拿到一劑強心針！",
+            6: "解析：媽媽前三個月有點排斥甜食，甚至變得不愛喝原本最愛的咖啡（怕苦），但是酸的辣的都很能吃！有酸有辣又有苦，台下偵探們開始燒腦了吧！"
+        };
+
+        var gameDescriptions = {
+            1: "📐 【媽媽肚圍超級盲猜】\n\n親友單憑視覺，剪下一段你認為最符合媽媽當下『精準肚圍』的絲帶長度並寫上姓名。\n\n最後現場環繞開獎！量出來最接近、最有默契的隊伍，贏得解鎖線索卡特權！",
+            2: "🎬 【大寶心機讀心術】\n\n大螢幕會播放幾段『大寶日常說話』的趣味短片，在關鍵時刻影片會突然暫停！\n\n兩隊親友必須通靈盲猜大寶下一句會說出什麼可愛的童言童語？答對最多題的隊伍獲勝！",
+            3: "🎤 【神鬼兒歌接唱填空】\n\n主持人會隨機播放經典的懷舊兒歌，但在關鍵歌詞時會突然消音。\n\n兩隊親友必須拍桌搶答，並現場大聲把正確的歌詞『接唱出來』！先拿到指定分數的隊伍獲勝！"
+        };
+
+        var unlockedCount = 0;
+        var currentActiveId = null;
+        
+        var myId = localStorage.getItem("party_user_id");
+        if (!myId) {
+            myId = "user_" + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem("party_user_id", myId);
+        }
+
+        var myName = localStorage.getItem("party_user_name") || "";
+        var myCurrentTeam = localStorage.getItem("party_user_team") || "";
+        var allGlobalPlayers = {};
+
+        window.onload = function() {
+            renderDashboard();
+
+            if (supabaseClient) {
+                try {
+                    channel = supabaseClient.channel("babyshower_room", { config: { broadcast: { self: true } } });
+                    
+                    channel.on("broadcast", { event: "sync" }, function(obj) {
+                        var payload = obj.payload;
+                        if (payload && payload.player) {
+                            allGlobalPlayers[payload.player.id] = payload.player;
+                        }
+                        if (payload && payload.allPlayers) {
+                            allGlobalPlayers = Object.assign({}, allGlobalPlayers, payload.allPlayers);
+                        }
+                        renderDashboard();
+                    }).on("broadcast", { event: "request_sync" }, function() {
+                        if (myName) { sendMyStatus(false); }
+                    }).subscribe(function(status) {
+                        if (status === "SUBSCRIBED") {
+                            if (myName) { sendMyStatus(true); }
+                            channel.send({ type: "broadcast", event: "request_sync", payload: {} });
+                        }
+                    });
+                } catch(err) {
+                    console.log("頻道訂閱異常");
+                }
+            }
+
+            if (myName) {
+                enterMainWall();
+            }
+        };
+
+        function selectInitialTeam(team) {
+            myCurrentTeam = team;
+            document.querySelectorAll(".choice-btn").forEach(function(btn) { btn.classList.remove("active"); });
+            document.querySelector(".btn-" + team).classList.add("active");
+        }
+
+        function joinParty() {
+            myName = document.getElementById("playerNameInput").value.trim();
+            if (!myName) { alert("請輸入名字！"); return; }
+            if (!myCurrentTeam) { alert("請選擇一個直覺陣營！"); return; }
+
+            localStorage.setItem("party_user_name", myName);
+            localStorage.setItem("party_user_team", myCurrentTeam);
+
+            enterMainWall();
+            sendMyStatus(true); 
+        }
+
+        function enterMainWall() {
+            var overlay = document.getElementById("loginOverlay");
+            if (overlay) overlay.style.display = "none";
+            var zone = document.getElementById("changeTeamZone");
+            if (zone) zone.style.display = "flex";
+            updateMiniButtons();
+        }
+
+        function changeCurrentTeam(team) {
+            myCurrentTeam = team;
+            localStorage.setItem("party_user_team", team);
+            updateMiniButtons();
+            sendMyStatus(false);
+        }
+
+        function updateMiniButtons() {
+            document.querySelectorAll(".mini-btn").forEach(function(btn) { btn.classList.remove("active"); });
+            var btn = document.getElementById("mb_" + myCurrentTeam);
+            if (btn) btn.classList.add("active");
+        }
+
+        function sendMyStatus(requestAll) {
+            var myData = { id: myId, name: myName, team: myCurrentTeam, ts: Date.now() };
+            allGlobalPlayers[myId] = myData;
+
+            if (channel) {
+                try {
+                    channel.send({
+                        type: "broadcast",
+                        event: "sync",
+                        payload: { player: myData }
+                    });
+
+                    if (requestAll) {
+                        channel.send({
+                            type: "broadcast",
+                            event: "sync",
+                            payload: { allPlayers: allGlobalPlayers }
+                        });
+                    }
+                } catch(e) { }
+            }
+            renderDashboard();
+        }
+
+        function renderDashboard() {
+            var counts = { boy: 0, girl: 0, neutral: 0 };
+            var lists = { boy: [], girl: [], neutral: [] };
+
+            Object.keys(allGlobalPlayers).forEach(function(id) {
+                var p = allGlobalPlayers[id];
+                if (counts[p.team] !== undefined) {
+                    counts[p.team]++;
+                    lists[p.team].push(p.name);
+                }
+            });
+
+            var cb = document.getElementById("count_boy"); if (cb) cb.innerText = counts.boy + " 人";
+            var cg = document.getElementById("count_girl"); if (cg) cg.innerText = counts.girl + " 人";
+            var cn = document.getElementById("count_neutral"); if (cn) cn.innerText = counts.neutral + " 人";
+
+            var lb = document.getElementById("list_boy"); if (lb) lb.innerText = lists.boy.length > 0 ? lists.boy.join("、") : "尚無人選擇";
+            var lg = document.getElementById("list_girl"); if (lg) lg.innerText = lists.girl.length > 0 ? lists.girl.join("、") : "尚無人選擇";
+            var ln = document.getElementById("list_neutral"); if (ln) ln.innerText = lists.neutral.length > 0 ? lists.neutral.join("、") : "尚無人選擇";
+
+            var total = counts.boy + counts.girl + counts.neutral;
+            var barBoy = document.getElementById("bar_boy");
+            var barGirl = document.getElementById("bar_girl");
+            var barNeutral = document.getElementById("bar_neutral");
+
+            if (barBoy && barGirl && barNeutral) {
+                if (total === 0) {
+                    barBoy.style.width = "33.3%"; barGirl.style.width = "33.3%"; barNeutral.style.width = "33.3%";
+                } else {
+                    barBoy.style.width = ((counts.boy / total) * 100) + "%";
+                    barGirl.style.width = ((counts.girl / total) * 100) + "%";
+                    barNeutral.style.width = ((counts.neutral / total) * 100) + "%";
+                }
+            }
+        }
+
+        function openGameModal(gameId) {
+            const titles = { 1: "媽媽肚圍超級盲猜", 2: "大寶心機讀心術", 3: "神鬼兒歌接唱填空" };
+            document.getElementById("gameModalTitle").innerText = "🎮 " + titles[gameId];
+            document.getElementById("gameModalDesc").innerText = gameDescriptions[gameId];
+            document.getElementById("gameModal").style.display = "flex";
+        }
+        function closeGameModal() { document.getElementById("gameModal").style.display = "none"; }
+
+        function unlock(id) {
+            currentActiveId = id;
+            var targetCard = document.getElementById("card" + id);
+            if (targetCard && !targetCard.classList.contains("unlocked")) {
+                targetCard.classList.add("unlocked");
+                unlockedCount++;
+                targetCard.querySelector(".unlock-btn").innerText = "👁️ 贏家已閱讀";
+            }
+            document.getElementById("clueAnswerSecret").style.display = "none";
+            document.getElementById("secretBtn").style.display = "inline-block";
+            document.getElementById("clueModal").style.display = "flex";
+        }
+
+        function revealSecretAnswer() {
+            document.getElementById("secretBtn").style.display = "none";
+            var secretZone = document.getElementById("clueAnswerSecret");
+            if (secretZone) {
+                secretZone.innerText = answers[currentActiveId];
+                secretZone.style.display = "block";
+            }
+        }
+
+        function closeModal() {
+            document.getElementById("clueModal").style.display = "none";
+            if (unlockedCount === 6) {
+                var rBtn = document.getElementById("revealBtn");
+                if (rBtn) rBtn.style.display = "block";
+                window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+            }
+        }
+
+        function startCountdown() {
+            var overlay = document.getElementById("countdownOverlay");
+            if (overlay) {
+                overlay.style.display = "flex";
+                var count = 5;
+                overlay.innerText = count;
+                var timer = setInterval(function() {
+                    count--;
+                    if (count > 0) { overlay.innerText = count; }
+                    else if (count === 0) { overlay.innerText = "✨ 二寶到底是... ✨"; overlay.style.fontSize = "5rem"; }
+                    else { clearInterval(timer); overlay.style.display = "none"; showResult(); }
+                }, 1000);
+            }
+        }
+
+        function showResult() {
+            var resultOverlay = document.getElementById("resultOverlay");
+            var resultTitle = document.getElementById("resultTitle");
+            var resultSub = document.getElementById("resultSub");
+            if (resultOverlay && resultTitle && resultSub) {
+                if (BABY_GENDER === "boy") {
+                    resultOverlay.classList.add("bg-boy");
+                    resultTitle.innerText = "💙 It's a BOY! 💙";
+                    resultSub.innerHTML = "歡迎二寶 <span style='color:#fff; font-size:3rem; font-weight:900;'>【楊墨水 🖋️】</span> 來報到！<br>大寶哥哥以後有弟弟可以一起玩車車闖天下了！🏎️✨";
+                } else {
+                    resultOverlay.classList.add("bg-girl");
+                    resultTitle.innerText = "💗 It's a GIRL! 💗";
+                    resultSub.innerHTML = "歡迎二寶 <span style='color:#fff; font-size:3rem; font-weight:900;'>【楊桃芝 🍹】</span> 來報到！<br>恭喜湊成一個『好』字！大寶有貼心的妹妹，全家的小心肝！🎀✨";
+                }
+                resultOverlay.style.display = "flex";
+            }
+        }
+    </script>
+</body>
+</html>
