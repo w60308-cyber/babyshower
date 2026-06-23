@@ -3,27 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌈 二寶降臨：贏家專屬解密牆 🔍</title>
+    <title>🌈 二寶降臨：全場極速解密牆 🔍</title>
     <!-- 引入 Supabase 官方實時連線套件 -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #fff5f5 0%, #f0f3ff 100%);
-            --boy-color: #54a0ff;
-            --boy-grad: linear-gradient(135deg, #74b9ff 0%, #2e86de 100%);
-            --girl-color: #ff7675;
-            --girl-grad: linear-gradient(135deg, #ff9a9e 0%, #f50057 100%);
-            --neutral-color: #a4b0be;
-            --neutral-grad: linear-gradient(135deg, #f1f2f6 0%, #747d8c 100%);
-            --game-grad: linear-gradient(135deg, #ff9f43 0%, #ff6b6b 100%);
-            --card-bg: rgba(255, 255, 255, 0.85);
+            --bg-gradient: linear-gradient(135deg, #fff6f6 0%, #f3f6ff 100%);
+            --boy-color: #74b9ff;
+            --boy-grad: linear-gradient(135deg, #a1c4fd 0%, #74b9ff 100%);
+            --girl-color: #ff9a9e;
+            --girl-grad: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            --neutral-color: #b2bec3;
+            --neutral-grad: linear-gradient(135deg, #f1f2f6 0%, #b2bec3 100%);
+            --game-grad: linear-gradient(135deg, #ffeaa7 0%, #ffb142 100%);
+            --card-shadow: 0 12px 30px rgba(162, 155, 254, 0.08);
+            --btn-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
         }
 
         body {
             font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
             background: var(--bg-gradient);
             margin: 0;
-            padding: 20px;
+            padding: 25px 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -32,7 +33,7 @@
             overflow-x: hidden;
         }
 
-        /* 報到遮罩區 */
+        /* 時尚可愛報到遮罩 */
         .login-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -43,140 +44,155 @@
             align-items: center;
             padding: 20px;
             box-sizing: border-box;
-            transition: all 0.5s ease;
         }
 
         .login-box {
             background: white;
-            padding: 40px 30px;
-            border-radius: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.08);
-            max-width: 420px;
+            padding: 35px 25px;
+            border-radius: 32px;
+            box-shadow: 0 20px 50px rgba(108, 92, 231, 0.1);
+            max-width: 400px;
             width: 100%;
             text-align: center;
+            border: 2px solid #fff;
         }
+
+        .login-box h2 { font-size: 1.8rem; margin: 0 0 8px 0; color: #34495e; font-weight: 900; }
+        .login-box p { color: #95a5a6; font-size: 0.95rem; margin-bottom: 25px; }
 
         .login-box input {
             width: 85%;
             padding: 14px;
-            font-size: 1.2rem;
-            border: 2px solid #edf2f7;
-            border-radius: 18px;
+            font-size: 1.15rem;
+            border: 2px solid #f1f2f6;
+            border-radius: 20px;
             margin-bottom: 25px;
             text-align: center;
             outline: none;
+            background: #fbfbfc;
+            transition: all 0.2s;
         }
+        .login-box input:focus { border-color: #a29bfe; background: white; }
 
-        .choice-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 15px; color: #57606f; }
+        .choice-title { font-size: 1.05rem; font-weight: bold; margin-bottom: 12px; color: #57606f; }
         .choice-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; }
         
         .btn-select {
             padding: 14px;
             font-size: 1.1rem;
             font-weight: bold;
-            border: 2px solid #edf2f7;
-            border-radius: 16px;
+            border: 2px solid #f1f2f6;
+            border-radius: 20px;
             background: white;
             cursor: pointer;
-            transition: all 0.2s ease;
+            box-shadow: var(--btn-shadow);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+        .btn-select:hover { transform: translateY(-2px); }
         .btn-select.active.b { background: var(--boy-grad); color: white; border-color: transparent; }
         .btn-select.active.g { background: var(--girl-grad); color: white; border-color: transparent; }
         .btn-select.active.n { background: var(--neutral-grad); color: white; border-color: transparent; }
 
         /* 主標題區 */
-        .header-container { text-align: center; margin-bottom: 25px; position: relative; width: 100%; max-width: 1000px;}
-        h1 { font-size: 2.6rem; margin: 0 0 8px 0; color: #2c3e50; }
-        .sub-tag { font-size: 1.1rem; color: #7f8c8d; background: white; padding: 8px 25px; border-radius: 50px; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.02); font-weight: bold; }
-        .host-toggle-icon { position: absolute; right: 10px; top: 10px; font-size: 1.5rem; cursor: pointer; opacity: 0.3; }
-        .host-toggle-icon:hover { opacity: 1; }
+        .header-container { text-align: center; margin-bottom: 30px; position: relative; width: 100%; max-width: 1000px; }
+        h1 { font-size: 2.5rem; margin: 0 0 10px 0; color: #2c3e50; font-weight: 900; text-shadow: 2px 2px 0px white; }
+        .sub-tag { font-size: 1.05rem; color: #7f8c8d; background: white; padding: 10px 28px; border-radius: 50px; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.02); font-weight: bold; border: 1px solid #f1f2f6; }
+        .host-toggle-icon { position: absolute; right: 10px; top: 10px; font-size: 1.6rem; cursor: pointer; opacity: 0.25; transition: opacity 0.2s; }
+        .host-toggle-icon:hover { opacity: 0.8; }
 
-        /* 實時戰況看板 */
+        /* 頂級圓潤戰況看板 */
         .status-board {
             background: white;
-            border-radius: 30px;
-            padding: 30px;
-            box-shadow: 0 15px 35px rgba(155, 89, 182, 0.05);
+            border-radius: 32px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
             width: 100%;
             max-width: 850px;
             box-sizing: border-box;
             margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.7);
         }
 
         .board-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .team-card-box { background: #f8f9fa; border-radius: 20px; padding: 15px; text-align: center; }
-        .team-name { font-size: 1.1rem; font-weight: bold; margin-bottom: 5px; }
-        .team-num { font-size: 2.2rem; font-weight: 900; font-family: 'Arial Black', sans-serif; margin-bottom: 10px; }
-        .team-members { font-size: 0.9rem; color: #747d8c; line-height: 1.5; height: 60px; overflow-y: auto; text-align: center; word-break: break-all; }
+        .team-card-box { background: #fbfbfc; border-radius: 24px; padding: 18px 12px; text-align: center; border: 1px solid #f1f2f6; transition: all 0.3s; }
+        .team-card-box:hover { transform: scale(1.02); }
+        .team-name { font-size: 1.05rem; font-weight: bold; margin-bottom: 6px; }
+        .team-num { font-size: 2.4rem; font-weight: 900; font-family: 'Arial Rounded MT Bold', sans-serif; margin-bottom: 8px; }
+        .team-members { font-size: 0.9rem; color: #747d8c; line-height: 1.5; height: 60px; overflow-y: auto; padding: 0 5px; }
 
-        .cb { color: #2e86de; } .cg { color: #f50057; } .cn { color: #57606f; }
+        .cb { color: #48dbfb; } .cg { color: #ff7675; } .cn { color: #8395a7; }
 
-        .ratio-bar-wrapper { width: 100%; height: 18px; background: #eceff1; border-radius: 10px; overflow: hidden; display: flex; margin-top: 20px; }
-        .rb-b { background: var(--boy-grad); transition: width 0.4s ease; }
-        .rb-g { background: var(--girl-grad); transition: width 0.4s ease; }
-        .rb-n { background: var(--neutral-grad); transition: width 0.4s ease; }
+        /* 糖果色彩比例條 */
+        .ratio-bar-wrapper { width: 100%; height: 20px; background: #f1f2f6; border-radius: 50px; overflow: hidden; display: flex; margin-top: 25px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); }
+        .rb-b { background: var(--boy-grad); transition: width 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .rb-g { background: var(--girl-grad); transition: width 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .rb-n { background: var(--neutral-grad); transition: width 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
-        /* 行動端快捷轉隊區 */
-        .change-team-zone { display: none; gap: 8px; margin-bottom: 25px; background: white; padding: 10px 20px; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.04); align-items: center; justify-content: center; }
-        .change-team-zone span { font-weight: bold; font-size: 0.95rem; }
-        .mini-btn { border: none; padding: 8px 16px; font-size: 0.9rem; font-weight: bold; border-radius: 20px; cursor: pointer; transition: all 0.2s; background: #eee; }
-        .mini-btn.active { outline: 3px solid #9b59b6; box-shadow: 0 0 10px rgba(155,89,182,0.3); }
+        /* 快捷轉隊區 */
+        .change-team-zone { display: none; gap: 10px; margin-bottom: 30px; background: white; padding: 12px 25px; border-radius: 50px; box-shadow: var(--card-shadow); align-items: center; justify-content: center; border: 1px solid #f1f2f6; }
+        .change-team-zone span { font-weight: bold; font-size: 0.95rem; color: #57606f; }
+        .mini-btn { border: none; padding: 8px 18px; font-size: 0.9rem; font-weight: bold; border-radius: 50px; cursor: pointer; transition: all 0.2s; background: #f1f2f6; color: #57606f; box-shadow: var(--btn-shadow); }
+        .mini-btn:hover { transform: translateY(-1px); }
+        .mini-btn.active { outline: 3px solid #a29bfe; outline-offset: 2px; }
         .mini-btn.m-boy { background: var(--boy-grad); color: white; }
         .mini-btn.m-girl { background: var(--girl-grad); color: white; }
         .mini-btn.m-neutral { background: var(--neutral-grad); color: white; }
 
-        /* 遊戲關卡專區 */
+        /* 遊戲任務專區 */
         .mission-zone { width: 100%; max-width: 850px; margin-bottom: 30px; text-align: center; }
-        .mission-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; }
+        .mission-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; color: #57606f; }
         .mission-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-        .mission-card { background: var(--game-grad); border: none; border-radius: 18px; padding: 14px; font-size: 1.05rem; font-weight: bold; color: white; cursor: pointer; width: 100%; box-shadow: 0 5px 15px rgba(255,107,107,0.2); }
+        .mission-card { background: var(--game-grad); border: none; border-radius: 22px; padding: 15px; font-size: 1rem; font-weight: bold; color: white; cursor: pointer; box-shadow: 0 8px 20px rgba(255,177,66,0.25); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .mission-card:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(255,177,66,0.35); }
 
-        /* 密碼牆六宮格 */
-        .clue-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; width: 100%; max-width: 1000px; margin-bottom: 40px; }
-        .clue-card { background: white; border: 2px solid #edf2f7; border-radius: 24px; padding: 20px 15px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; min-height: 240px; box-sizing: border-box; transition: all 0.3s ease; }
-        .clue-card.my-locked { background: #f5f6fa; opacity: 0.7; border-color: #dcdde1; }
+        /* 密碼牆網格 */
+        .grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; width: 100%; max-width: 1100px; margin-bottom: 40px; }
+        .clue-card { background: white; border: 2px solid #fff; border-radius: 28px; padding: 22px 18px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; min-height: 250px; box-sizing: border-box; box-shadow: var(--card-shadow); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .clue-card.my-locked { background: #f6f8fb; opacity: 0.75; border-color: #edf2f7; box-shadow: none; }
+        .clue-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(162, 155, 254, 0.15); }
         
-        .c-icon { font-size: 2.6rem; margin-bottom: 5px; }
-        .c-badge { font-size: 0.85rem; font-weight: bold; color: #8e44ad; background: #f3e5f5; padding: 4px 12px; border-radius: 12px; display: inline-block; margin-bottom: 10px; }
-        .c-text { font-size: 1rem; font-weight: bold; line-height: 1.5; color: #34495e; flex-grow: 1; display: flex; align-items: center; justify-content: center; }
+        .c-icon { font-size: 2.8rem; margin-bottom: 6px; }
+        .c-badge { font-size: 0.85rem; font-weight: bold; color: #6c5ce7; background: #f1f0ff; padding: 5px 14px; border-radius: 50px; display: inline-block; margin-bottom: 12px; }
+        .c-text { font-size: 1rem; font-weight: bold; line-height: 1.6; color: #2c3e50; flex-grow: 1; display: flex; align-items: center; justify-content: center; padding: 0 5px; }
         
-        .btn-view { background: linear-gradient(135deg, #a29bfe, #6c5ce7); color: white; border: none; padding: 12px 15px; font-size: 1rem; font-weight: bold; border-radius: 14px; cursor: pointer; width: 100%; }
-        .card-status-text { font-size: 0.85rem; font-weight: bold; margin-top: 8px; }
+        .btn-view { background: linear-gradient(135deg, #a29bfe, #6c5ce7); color: white; border: none; padding: 12px 15px; font-size: 1rem; font-weight: bold; border-radius: 18px; cursor: pointer; width: 100%; box-shadow: 0 5px 15px rgba(108,92,231,0.2); transition: all 0.2s; }
+        .btn-view:hover { opacity: 0.9; }
+        .card-status-text { font-size: 0.85rem; font-weight: bold; margin-top: 10px; }
 
-        /* 終極倒數大按鈕 */
-        .btn-final-reveal { background: linear-gradient(135deg, #ff4757, #9b59b6); color: white; border: none; padding: 18px 60px; font-size: 1.5rem; font-weight: bold; border-radius: 50px; cursor: pointer; box-shadow: 0 10px 25px rgba(255,71,87,0.3); display: none; margin-bottom: 40px; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
+        /* 直接揭曉大按鈕 */
+        .btn-final-reveal { background: linear-gradient(135deg, #ff7675, #6c5ce7); color: white; border: none; padding: 18px 60px; font-size: 1.4rem; font-weight: bold; border-radius: 50px; cursor: pointer; box-shadow: 0 10px 30px rgba(108,92,231,0.25); display: none; margin-bottom: 40px; transition: transform 0.2s; }
+        .btn-final-reveal:hover { transform: scale(1.03); }
 
-        /* 隱藏式後台控制面板 */
-        .host-control-panel { display: none; background: #2c3e50; color: white; border-radius: 24px; padding: 25px; width: 100%; max-width: 850px; box-sizing: border-box; margin-top: 40px; text-align: center; }
+        /* 主辦人控制面板 */
+        .host-control-panel { display: none; background: #2d3436; color: white; border-radius: 28px; padding: 25px; width: 100%; max-width: 850px; box-sizing: border-box; margin-top: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); text-align: center; }
         .control-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 15px; }
-        .control-row { background: #34495e; padding: 12px 15px; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; }
-        .ctrl-btn-group { display: flex; gap: 4px; flex-wrap: wrap; }
-        .ctrl-btn { border: none; padding: 6px 10px; font-size: 0.8rem; font-weight: bold; border-radius: 6px; cursor: pointer; color: white; }
-        .cb-b { background: #2980b9; } .cb-g { background: #c0392b; } .cb-n { background: #7f8c8d; } .cb-all { background: #27ae60; }
-        .btn-master-reset { background: #e74c3c; color: white; border: none; padding: 12px 30px; font-size: 1rem; border-radius: 12px; cursor: pointer; font-weight: bold; margin-top: 25px; margin-right: 10px; }
+        .control-row { background: #3d4142; padding: 12px 18px; border-radius: 18px; display: flex; align-items: center; justify-content: space-between; }
+        .ctrl-btn-group { display: flex; gap: 5px; }
+        .ctrl-btn { border: none; padding: 7px 12px; font-size: 0.85rem; font-weight: bold; border-radius: 8px; cursor: pointer; color: white; transition: opacity 0.1s; }
+        .ctrl-btn:active { opacity: 0.8; }
+        .cb-b { background: #54a0ff; } .cb-g { background: #ff7675; } .cb-n { background: #a4b0be; } .cb-close { background: #1e272e; }
+        .btn-master-reset { background: #ff4757; color: white; border: none; padding: 12px 30px; font-size: 1rem; border-radius: 14px; cursor: pointer; font-weight: bold; margin-top: 25px; margin-right: 10px; }
 
-        /* 彈出視窗 */
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 35px; border-radius: 30px; width: 85%; max-width: 480px; text-align: center; }
-        .secret-box { font-size: 1.25rem; line-height: 1.6; background: #fff9f9; padding: 20px; border-radius: 18px; border: 2px dashed #ff7675; text-align: left; margin: 20px 0; color: #2c3e50; }
-        .btn-close { background: #2c3e50; color: white; border: none; padding: 12px 30px; font-size: 1rem; border-radius: 14px; cursor: pointer; font-weight: bold; width: 100%; }
+        /* 時尚馬卡龍彈出視窗 */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(45, 52, 54, 0.7); backdrop-filter: blur(5px); justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 35px 25px; border-radius: 32px; width: 85%; max-width: 460px; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.15); border: 2px solid #fff; }
+        .secret-box { font-size: 1.15rem; line-height: 1.6; background: #fffaf0; padding: 22px 18px; border-radius: 20px; border: 2px dashed #ffa502; text-align: left; margin: 20px 0; color: #2f3542; font-weight: bold; }
+        .btn-close { background: #2c3e50; color: white; border: none; padding: 14px 30px; font-size: 1.05rem; border-radius: 18px; cursor: pointer; font-weight: bold; width: 100%; box-shadow: var(--btn-shadow); transition: background 0.2s; }
+        .btn-close:hover { background: #1e272e; }
 
-        /* 倒數遮罩 */
-        .countdown-screen { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:#2c3e50; color:white; z-index: 3000; justify-content:center; align-items:center; font-size:12rem; font-weight:900; font-family:'Arial Black'; }
-        
-        /* 結局畫面 */
-        .result-screen { display: none; position: fixed; top:0; left:0; width:100%; height:100%; z-index: 4000; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 20px; box-sizing: border-box; }
-        .res-title { font-size: 5.5rem; font-weight: 900; margin-bottom: 20px; text-shadow: 0 10px 25px rgba(0,0,0,0.15); }
-        .res-sub { font-size: 2.2rem; font-weight: bold; background: rgba(255,255,255,0.2); padding: 20px 40px; border-radius: 40px; backdrop-filter: blur(5px); line-height: 1.6; max-width: 750px; }
+        /* 終極直接揭曉大畫面 */
+        .result-screen { display: none; position: fixed; top:0; left:0; width:100%; height:100%; z-index: 4000; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 20px; box-sizing: border-box; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .res-title { font-size: 5rem; font-weight: 900; margin-bottom: 25px; text-shadow: 0 8px 25px rgba(0,0,0,0.12); font-family: 'Arial Rounded MT Bold', sans-serif; }
+        .res-sub { font-size: 2.1rem; font-weight: bold; background: rgba(255,255,255,0.22); padding: 25px 40px; border-radius: 36px; backdrop-filter: blur(8px); line-height: 1.6; max-width: 720px; border: 2px solid rgba(255,255,255,0.3); }
         .bg-b { background: linear-gradient(135deg, #74b9ff, #0984e3); }
         .bg-g { background: linear-gradient(135deg, #ff7675, #d63031); }
 
         @media (max-width: 768px) {
-            .board-grid { grid-template-columns: 1fr; gap: 10px; }
-            .clue-grid { grid-template-columns: 1fr; }
-            .mission-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 1.8rem; }
+            .board-grid, .clue-grid, .mission-grid { grid-template-columns: 1fr; gap: 12px; }
             .control-row { flex-direction: column; gap: 10px; text-align: center; }
+            .team-members { height: 50px; }
         }
     </style>
 </head>
@@ -185,7 +201,7 @@
     <!-- 報到遮罩區 -->
     <div id="loginOverlay" class="login-overlay">
         <div class="login-box">
-            <h2 style="color: #4a4a4a; margin-bottom: 5px;">二寶性別親友團報到</h2>
+            <h2>二寶性別親友團報到</h2>
             <p>請輸入您的暱稱並選擇預測陣營</p>
             <input type="text" id="playerNameInput" placeholder="請輸入您的姓名/暱稱" maxlength="8">
             <div class="choice-title">🎯 您的直覺押寶：</div>
@@ -194,7 +210,7 @@
                 <button class="btn-select g" onclick="selectInitialTeam('girl')">💗 押寶：楊桃芝 (女)</button>
                 <button class="btn-select n" onclick="selectInitialTeam('neutral')">⚪ 中立：純吃瓜看熱鬧</button>
             </div>
-            <button class="btn-view" style="padding:15px; font-size:1.1rem;" onclick="joinParty()">🚀 綁定裝置並進入解密牆</button>
+            <button class="btn-view" style="padding:15px; font-size:1.1rem; border-radius:20px;" onclick="joinParty()">🚀 綁定裝置並進入解密牆</button>
         </div>
     </div>
 
@@ -231,7 +247,7 @@
         </div>
     </div>
 
-    <!-- 行動端隨時見風轉隊功能 -->
+    <!-- 快捷轉隊功能 -->
     <div id="changeTeamZone" class="change-team-zone">
         <span>🔄 隨時見風轉隊：</span>
         <button class="mini-btn m-boy" id="mb_boy" onclick="changeCurrentTeam('boy')">投墨水</button>
@@ -249,7 +265,7 @@
         </div>
     </div>
 
-    <!-- 六大核心密碼牆 -->
+    <!-- 六大核心密碼牆 (修正卡片6的標籤與函式名稱錯亂Bug) -->
     <div class="clue-grid">
         <div class="clue-card" id="card1">
             <div class="c-icon">🗺️</div><div class="c-badge">線索 1</div>
@@ -282,15 +298,15 @@
             <div class="card-status-text" id="status5" style="color:#95a5a6">等待主辦人分發權限</div>
         </div>
         <div class="clue-card" id="card6">
-            <div class="c-icon">🍋</div><div class="q-number">線索 6</div>
-            <div class="q-text">【酸男辣女口味大洗牌】前三個月的複雜口味破解</div>
-            <button class="unlock-btn" onclick="unlock(6)">🔒 贏家點此觀看答案</button>
-            <div class="status-tag" id="status6" style="color:#999">等待主辦人分發權限</div>
+            <div class="c-icon">🍋</div><div class="c-badge">線索 6</div>
+            <div class="c-text">【酸男辣女口味大洗牌】前三個月的複雜口味破解</div>
+            <button class="btn-view" onclick="triggerOpenClue(6)">🔒 閱讀答案</button>
+            <div class="card-status-text" id="status6" style="color:#95a5a6">等待主辦人分發權限</div>
         </div>
     </div>
 
-    <!-- 終極解密大按鈕（當大螢幕全開時可點） -->
-    <button class="btn-final-reveal" id="btnFinalReveal" onclick="runFinalCountdown()">✨ 揭曉歷史時刻，啟動終極倒數！ ✨</button>
+    <!-- 終極解密大按鈕（移除了倒數，一按直接開獎） -->
+    <button class="btn-final-reveal" id="btnFinalReveal" onclick="directRevealResult()">✨ 揭曉歷史時刻，直接開獎！ ✨</button>
 
     <!-- 隱藏式主辦人後台 -->
     <div class="host-control-panel" id="hostControlPanel">
@@ -299,31 +315,30 @@
         <div class="control-grid" id="controlGridArea"></div>
         
         <div style="margin-top:25px;">
-            <button class="btn-master-reset" style="background:linear-gradient(135deg, #ff4757, #9b59b6); width: 280px; margin-top:0;" onclick="remoteTriggerCountdown()">📢 遠端同步啟動全場倒數</button>
+            <button class="btn-master-reset" style="background:linear-gradient(135deg, #ff7675, #6c5ce7); width: 280px; margin-top:0;" onclick="remoteTriggerInstantReveal()">📢 遠端同步直接揭曉性別</button>
             <button class="btn-master-reset" onclick="triggerMasterReset()">🚨 全場強制洗牌歸零</button>
         </div>
     </div>
 
-    <!-- 秘密線索視窗 -->
+    <!-- 秘密線索視窗 (修正關閉卡死問題，並更新按鈕文字) -->
     <div class="modal" id="clueModal">
         <div class="modal-content">
-            <h3 id="modalClueTitle" style="color:#8e44ad; margin-top:0;">🔑 贏家解鎖密碼解析</h3>
+            <h3 id="modalClueTitle" style="color:#6c5ce7; margin-top:0; font-weight:900;">🔑 贏家解鎖密碼解析</h3>
             <div class="secret-box" id="modalClueContent"></div>
-            <button class="btn-close" onclick="closeClueModal()">看完關閉，進入拉攏轉隊時間</button>
+            <button class="btn-close" onclick="closeClueModal()">看完關閉，贏家可選擇是否轉隊</button>
         </div>
     </div>
 
     <!-- 任務說明視窗 -->
     <div class="modal" id="gameModal">
         <div class="modal-content">
-            <h3 id="modalGameTitle" style="color:#ff6b6b; margin-top:0;">🎮 關卡說明</h3>
+            <h3 id="modalGameTitle" style="color:#ff6b6b; margin-top:0; font-weight:900;">🎮 關卡說明</h3>
             <div class="secret-box" id="modalGameDesc" style="background:#fffdf0; border-color:#f1c40f;"></div>
             <button class="btn-close" onclick="closeGameModal()">關閉，開始挑戰！</button>
         </div>
     </div>
 
-    <!-- 倒數與結果大畫面 -->
-    <div class="countdown-screen" id="countdownScreen">5</div>
+    <!-- 結局畫面 (移除了倒數) -->
     <div class="result-screen" id="resultScreen">
         <div class="res-title" id="resTitle">It's...</div>
         <div class="res-sub" id="resSub">歡迎來到我們家！</div>
@@ -337,17 +352,17 @@
 
         const clueAnswers = {
             1: "解析：經過爸爸媽媽嚴密的虛歲年齡與受孕月份對照，流傳百年的清宮圖最終答案明明白白寫著：【男生】！受孕月份結果為男寶！🖋️",
-            2: "解析：恭喜贏家奪下親密福利！答案就是：【本隊所有女性隊員，現在可以直接上台實際觸摸媽媽的肚子，親自感受二寶的心靈感應！】🤰",
-            3: "解析：大寶的預言直預言發威！他每次摸著媽媽的肚子，都非常肯定且興奮地狂喊：『是妹妹！肚子裡面是妹妹！』👶（🍹 楊桃芝隊 大加分！）",
+            2: "解析：恭喜贏家解鎖親密福利！答案就是：【本隊所有女性隊員，現在可以直接上台實際觸摸媽媽的肚子，親自感受二寶的心靈感應！】🤰",
+            3: "解析：大寶的預言直覺發威！他每次摸著媽媽的肚子，都非常肯定且興奮地狂喊：『是妹妹！肚子裡面是妹妹！』👶（🍹 楊桃芝隊 大加分！）",
             4: "解析：全場親友一起作證！媽媽從懷孕到現在，氣色一直都超好、皮膚亮晶晶，『一直都超級美！』✨ 依照外貌學，這絕對是貼心小公主的特徵呀！",
             5: "解析：經過繁雜的數學口訣『七七四十九，問娘何月有...』，口訣算出來的終極數字，答案明明白白指向了【男孩】！🖋️ 楊墨水再次獲得強力佐證！",
             6: "解析：口味驚天大洗牌！媽媽前三個月變得完全不愛喝原本最愛的咖啡（怕苦），對甜食也有些排斥，但是酸的和辣的都很能吃！酸辣皆收、苦甜不要，台下偵探們開始燒腦了吧！"
         };
 
         const gameDescs = {
-            1: "📐 【媽媽肚圍超級盲猜】\n\n個人賽制！親友單憑視覺，剪下一段符合媽媽當下肚圍的絲帶長度並寫上姓名。\n\n量出來最接近、最有默契的那個人的隊伍，贏得解鎖線索特權！同時開放全場一分鐘心機轉隊！",
-            2: "🎬 【大寶心機讀心術】\n\n大螢幕播放大寶日常說話短片。在關鍵時刻影片會突然暫停！\n\n大家現場舉手搶答，盲猜大寶下一句會說什麼？答對最多題的隊伍獲勝，主辦人解鎖對應線索，再度開啟轉隊起鬨時間！",
-            3: "🎤 【神鬼兒歌接唱填空】\n\n最後大決戰！主持人隨機播放經典兒歌，在關鍵歌詞時會突然消音。\n\n全場拍桌瘋狂搶答，並現場大聲把消音歌詞『接唱出來』！答對最多題的隊伍獲勝！主辦人解鎖線索後，可由控制台強制發動終極倒數！"
+            1: "📐 【媽媽肚圍超級盲猜】\n\n個人賽制！親友單憑視覺，剪下一段符合媽媽當下肚圍的絲帶長度並寫上姓名。\n\n量出來最接近、最有默契的那個人的隊伍，贏得解鎖線索特權！同時開放全場贏家選擇是否轉隊！",
+            2: "🎬 【大寶心機讀心術】\n\n大螢幕播放大寶日常說話短片。在關鍵時刻影片會突然暫停！\n\n大家現場舉手搶答，盲猜大寶下一句會說什麼？答對最多題的隊伍獲勝，主辦人解鎖對應線索，再度開啟贏家是否轉隊的抉擇時刻！",
+            3: "🎤 【神鬼兒歌接唱填空】\n\n最後大決戰！主持人隨機播放經典兒歌，在關鍵歌詞時會突然消音。\n\n全場拍桌瘋狂搶答，並現場大聲把消音歌詞『接唱出來』！答對最多題的隊伍獲勝！主辦人解鎖最後線索後，可由控制台一鍵直接公佈大結局！"
         };
 
         let myId = localStorage.getItem("bs_uid") || "u_" + Math.random().toString(36).substr(2, 9);
@@ -398,8 +413,8 @@
                                 renderCoreDashboard();
                                 renderPermissionUI();
                             }
-                            else if (msg.action === "start_countdown") {
-                                runFinalCountdown();
+                            else if (msg.action === "instant_reveal") {
+                                showGrandFinale();
                             }
                             else if (msg.action === "trigger_clear") {
                                 localStorage.clear();
@@ -494,7 +509,6 @@
             document.getElementById("bar_neutral").style.width = (counts.neutral / total * 100) + "%";
         }
 
-        // ================== 核心升級：防偷看鎖定 UI 渲染 ==================
         function renderPermissionUI() {
             let allUnlocked = true;
             for (let i = 1; i <= 6; i++) {
@@ -539,7 +553,10 @@
             }
         }
 
-        function closeModal() { document.getElementById("clueModal").style.display = "none"; }
+        /* 核心修復：精準對齊 closeClueModal 的名稱，防止卡死 */
+        function closeClueModal() { 
+            document.getElementById("clueModal").style.display = "none"; 
+        }
         function openGameDesc(id) {
             const titles = { 1: "第一關：媽媽肚圍超級盲猜", 2: "第二關：大寶心機讀心術", 3: "第三關：神鬼兒歌接唱填空" };
             document.getElementById("modalGameTitle").innerText = titles[id];
@@ -548,7 +565,6 @@
         }
         function closeGameModal() { document.getElementById("gameModal").style.display = "none"; }
 
-        // ================== 後台控制與 4 按鈕渲染邏輯 ==================
         function promptHostMode() {
             let pin = prompt("請輸入主辦人管理密碼：");
             if (pin === "1234") {
@@ -580,8 +596,13 @@
             renderPermissionUI();
         }
 
-        function remoteTriggerCountdown() {
-            postBroadcast({ action: "start_countdown" });
+        /* 核心修復：直接同步揭曉，不走倒數 */
+        function remoteTriggerInstantReveal() {
+            postBroadcast({ action: "instant_reveal" });
+        }
+
+        function directRevealResult() {
+            showGrandFinale();
         }
 
         function triggerMasterReset() {
@@ -590,25 +611,7 @@
             }
         }
 
-        // ================== 終極倒數大結局 ==================
-        function runFinalCountdown() {
-            let s = document.getElementById("countdownScreen");
-            s.style.display = "flex";
-            let sec = 5;
-            s.innerText = sec;
-            
-            let timer = setInterval(function() {
-                sec--;
-                if (sec > 0) { s.innerText = sec; }
-                else if (sec === 0) { s.innerText = "✨ 二寶到底是... ✨"; s.style.fontSize = "4rem"; }
-                else {
-                    clearInterval(timer);
-                    s.style.display = "none";
-                    showGrandFinale();
-                }
-            }, 1000);
-        }
-
+        /* 直接開獎大結局 */
         function showGrandFinale() {
             let s = document.getElementById("resultScreen");
             let t = document.getElementById("resTitle");
