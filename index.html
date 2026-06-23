@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🌈 二寶降臨：全場極速解密牆 🔍</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #fff5f5 0%, #f0f3ff 100%);
@@ -214,7 +213,7 @@
     </div>
 
     <div class="dashboard">
-        <div class="poll-title">📊 雲端網頁實時同步：全場預測分布名單</div>
+        <div class="poll-title">📊 雲端網頁實時大綜合：全場預測分布名單</div>
         <div class="poll-columns">
             <div class="column-box">
                 <div class="box-title c-boy">💙 楊墨水 隊</div>
@@ -321,26 +320,13 @@
     </div>
 
     <script>
-        var supabaseClient = null;
-        var channel = null;
-        
-        try {
-            var sbUrl = "https://gqfscitqhywreujgskdr.supabase.co";
-            var sbKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxZnNjaXRxaHl3cmV1amdza2RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTU2OTAwMDAsImV4cCI6MjAyNzI2MDAwMH0.1vT8_pX9eJkW3i-FmN8vXn4rVp-7XgXW4z6bX1Y0ZQw";
-            if (typeof supabase !== "undefined" && supabase !== null) {
-                supabaseClient = supabase.createClient(sbUrl, sbKey);
-            }
-        } catch(e) {
-            console.log("Supabase 載入異常");
-        }
-
         var BABY_GENDER = "girl"; 
         var answers = {
-            1: "解析：經過爸爸媽媽嚴密的虛歲與月份對照，清宮圖最終計算出來的答案是：【男生】！🖋受孕月份結果為男寶！",
+            1: "解析：經過爸爸媽媽嚴密的虛歲與月份對照，清宮圖最終計算出來的答案是：【男生】！受孕月份結果為男寶！🖋️",
             2: "解析：恭喜贏家解鎖隱藏福利！答案就是：【本隊所有女性隊員，現在可以現場上台實際摸摸媽媽的肚子，親自感受二寶的魔力！】🤰",
             3: "解析：大寶每次摸媽媽的肚子，都非常肯定且興奮地狂喊：『是妹妹！肚子裡面是妹妹！』👶（大寶玄學發威，🍹 楊桃芝隊 大加分！）",
             4: "解析：全場親友作證！媽媽從懷孕到現在，氣色一直都超好、皮膚亮晶晶，『一直都超級美！』✨ 依照外貌學來說，這根本就是小公主的特徵呀！",
-            5: "解析：經過繁雜的數學加減乘除，口訣最後算出來的餘數結果，明明白白指向了【男孩】！🖋 楊墨水再次拿到一劑強心針！",
+            5: "解析：經過繁雜的數學加減乘除，口訣最後算出來的餘數結果，明明白白指向了【男孩】！🖋️ 楊墨水再次拿到一劑強心針！",
             6: "解析：媽媽前三個月有點排斥甜食，甚至變得不愛喝原本最愛的咖啡（怕苦），但是酸的辣的都很能吃！有酸有辣又有苦，台下偵探們開始燒腦了吧！"
         };
 
@@ -363,39 +349,63 @@
         var myCurrentTeam = localStorage.getItem("party_user_team") || "";
         var allGlobalPlayers = {};
 
+        // 核心無敵通訊：改採用對等混合型 HTTPS 廣播中心
+        var ntfyTopic = "w60308_cyber_babyshower_live_pool";
+        var eventSource = null;
+
         window.onload = function() {
             renderDashboard();
-
-            if (supabaseClient) {
-                try {
-                    channel = supabaseClient.channel("babyshower_room", { config: { broadcast: { self: true } } });
-                    
-                    channel.on("broadcast", { event: "sync" }, function(obj) {
-                        var payload = obj.payload;
-                        if (payload && payload.player) {
-                            allGlobalPlayers[payload.player.id] = payload.player;
-                        }
-                        if (payload && payload.allPlayers) {
-                            allGlobalPlayers = Object.assign({}, allGlobalPlayers, payload.allPlayers);
-                        }
-                        renderDashboard();
-                    }).on("broadcast", { event: "request_sync" }, function() {
-                        if (myName) { sendMyStatus(false); }
-                    }).subscribe(function(status) {
-                        if (status === "SUBSCRIBED") {
-                            if (myName) { sendMyStatus(true); }
-                            channel.send({ type: "broadcast", event: "request_sync", payload: {} });
-                        }
-                    });
-                } catch(err) {
-                    console.log("頻道訂閱異常");
-                }
-            }
+            initLiveSync();
 
             if (myName) {
                 enterMainWall();
             }
         };
+
+        function initLiveSync() {
+            try {
+                // 建立永不中斷的全球 HTTPS 實時接收管道（走標準 443 埠，絕不被 5G/4G 分享器封鎖）
+                eventSource = new EventSource("https://ntfy.sh/" + ntfyTopic + "/sse");
+                
+                eventSource.onmessage = function(event) {
+                    try {
+                        var ntfyData = JSON.parse(event.data);
+                        if (ntfyData.event === "message") {
+                            var payload = JSON.parse(ntfyData.message);
+                            
+                            if (payload.type === "sync" && payload.player) {
+                                allGlobalPlayers[payload.player.id] = payload.player;
+                                renderDashboard();
+                            }
+                            if (payload.type === "bulk" && payload.allPlayers) {
+                                allGlobalPlayers = Object.assign({}, allGlobalPlayers, payload.allPlayers);
+                                renderDashboard();
+                            }
+                            if (payload.type === "ask" && myName) {
+                                // 只要場上有新裝置發出詢問，我們就回傳資料幫他補齊全場名單
+                                sendMyStatus(true);
+                            }
+                        }
+                    } catch(e) { console.log(e); }
+                };
+
+                // 當管道就緒，如果是老玩家重新整理，或者是大螢幕，主動對全網發送同步請求
+                setTimeout(function() {
+                    broadcastMessage({ type: "ask" });
+                    if (myName) { sendMyStatus(true); }
+                }, 1000);
+
+            } catch(err) { console.log("連線建立異常"); }
+        }
+
+        function broadcastMessage(obj) {
+            try {
+                fetch("https://ntfy.sh/" + ntfyTopic, {
+                    method: "POST",
+                    body: JSON.stringify(obj)
+                });
+            } catch(e) {}
+        }
 
         function selectInitialTeam(team) {
             myCurrentTeam = team;
@@ -412,7 +422,7 @@
             localStorage.setItem("party_user_team", myCurrentTeam);
 
             enterMainWall();
-            sendMyStatus(true); 
+            sendMyStatus(true); // 剛加入，進行全網交叉打包大綜合
         }
 
         function enterMainWall() {
@@ -427,7 +437,7 @@
             myCurrentTeam = team;
             localStorage.setItem("party_user_team", team);
             updateMiniButtons();
-            sendMyStatus(false);
+            sendMyStatus(false); // 僅更新個人換隊資訊
         }
 
         function updateMiniButtons() {
@@ -436,26 +446,16 @@
             if (btn) btn.classList.add("active");
         }
 
-        function sendMyStatus(requestAll) {
+        function sendMyStatus(isBulk) {
             var myData = { id: myId, name: myName, team: myCurrentTeam, ts: Date.now() };
             allGlobalPlayers[myId] = myData;
 
-            if (channel) {
-                try {
-                    channel.send({
-                        type: "broadcast",
-                        event: "sync",
-                        payload: { player: myData }
-                    });
+            // 1. 先同步自己的最新狀態
+            broadcastMessage({ type: "sync", player: myData });
 
-                    if (requestAll) {
-                        channel.send({
-                            type: "broadcast",
-                            event: "sync",
-                            payload: { allPlayers: allGlobalPlayers }
-                        });
-                    }
-                } catch(e) { }
+            // 2. 如果是新加入或主動請求，把當前自己知道的所有綜合名單打包發出去，幫彼此消滅數據盲點
+            if (requestAll) {
+                broadcastMessage({ type: "bulk", allPlayers: allGlobalPlayers });
             }
             renderDashboard();
         }
