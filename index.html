@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🌈 二寶降臨：全場極速解密牆 🔍</title>
-    <!-- 引入 Firebase 即時連線套件 -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <!-- 引入 Supabase 官方實時連線套件 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #fff5f5 0%, #f0f3ff 100%);
@@ -70,7 +69,6 @@
 
         .gender-select-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; color: #636e72;}
         
-        /* 陣營按鈕樣式 */
         .choice-btn-group {
             display: flex;
             flex-direction: column;
@@ -97,7 +95,7 @@
         .subtitle span.b-name { color: #0984e3; }
         .subtitle span.g-name { color: #d63031; }
 
-        /* 升級版儀表板：包含三方數據與名單 */
+        /* 儀表板：數據與名單 */
         .dashboard {
             background: white;
             padding: 25px 30px;
@@ -133,24 +131,25 @@
 
         /* 三方即時比例條 */
         .bar-container { width: 100%; height: 24px; background: #dfe6e9; border-radius: 12px; overflow: hidden; display: flex; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
-        .bar-boy { width: 33.3%; background: var(--boy-grad); transition: width 0.5s ease-in-out; }
-        .bar-girl { width: 33.3%; background: var(--girl-grad); transition: width 0.5s ease-in-out; }
-        .bar-neutral { width: 33.3%; background: var(--neutral-grad); transition: width 0.5s ease-in-out; }
+        .bar-boy { width: 33.3%; background: var(--boy-grad); transition: width 0.4s ease; }
+        .bar-girl { width: 33.3%; background: var(--girl-grad); transition: width 0.4s ease; }
+        .bar-neutral { width: 33.3%; background: var(--neutral-grad); transition: width 0.4s ease; }
 
-        /* 線上隨時修正/轉隊按鈕區 (登入後浮現在主畫面頂部，方便玩家隨時換隊) */
+        /* 線上更換隊伍快捷區 */
         .change-team-zone {
             display: none;
             gap: 15px;
             margin-bottom: 25px;
-            background: rgba(255, 255, 255, 0.8);
-            padding: 10px 25px;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 12px 25px;
             border-radius: 50px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             align-items: center;
         }
         .change-team-zone span { font-weight: bold; color: #2d3436; }
-        .mini-btn { border: none; padding: 8px 16px; font-size: 0.95rem; font-weight: bold; border-radius: 20px; cursor: pointer; transition: transform 0.1s; }
+        .mini-btn { border: none; padding: 8px 18px; font-size: 0.95rem; font-weight: bold; border-radius: 20px; cursor: pointer; transition: transform 0.1s; }
         .mini-btn:active { transform: scale(0.95); }
+        .mini-btn.active { outline: 3px solid #6c5ce7; }
         .m-boy { background: var(--boy-grad); color: #2980b9; }
         .m-girl { background: var(--girl-grad); color: #c0392b; }
         .m-neutral { background: var(--neutral-grad); color: #636e72; }
@@ -175,7 +174,7 @@
         .lock-card.unlocked .unlock-btn { background: #b2bec3; }
 
         /* 終極與彈窗 */
-        .reveal-btn { background: linear-gradient(135deg, #ff7675, #6c5ce7); color: white; border: none; padding: 18px 50px; font-size: 1.6rem; font-weight: bold; border-radius: 50px; cursor: pointer; display: none; animation: pulse 2s infinite; }
+        .reveal-btn { background: linear-gradient(135deg, #ff7675, #6c5ce7); color: white; border: none; padding: 18px 50px; font-size: 1.6rem; font-weight: bold; border-radius: 50px; cursor: pointer; display: none; }
         .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(45, 52, 54, 0.9); justify-content: center; align-items: center; }
         .modal-content { background-color: white; padding: 40px; border-radius: 30px; max-width: 650px; width: 85%; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
         .modal-title { font-size: 2rem; color: #6c5ce7; font-weight: bold; margin-bottom: 25px; }
@@ -203,7 +202,7 @@
             <div class="gender-select-title">🎯 請選擇您目前的直覺預測：</div>
             <div class="choice-btn-group">
                 <button class="choice-btn btn-boy" onclick="selectInitialTeam('boy')">💙 押寶：楊墨水 (🖋️)</button>
-                <button class="choice-btn btn-girl" onclick="selectInitialTeam('girl') font">💗 押寶：楊桃芝 (🍹)</button>
+                <button class="choice-btn btn-girl" onclick="selectInitialTeam('girl')">💗 押寶：楊桃芝 (🍹)</button>
                 <button class="choice-btn btn-neutral" onclick="selectInitialTeam('neutral')">⚪ 中立：觀望吃瓜中 (🍿)</button>
             </div>
             
@@ -218,7 +217,7 @@
 
     <!-- 頂部：雲端實時同步數據與名單面板 -->
     <div class="dashboard">
-        <div class="poll-title">📊 雲端實時同步：全場預測分布名單</div>
+        <div class="poll-title">📊 雲端網頁實時同步：全場預測分布名單</div>
         <div class="poll-columns">
             <div class="column-box">
                 <div class="box-title c-boy">💙 楊墨水 隊</div>
@@ -247,9 +246,9 @@
     <!-- 手機端玩家隨時更換隊伍的快捷按鈕區 -->
     <div id="changeTeamZone" class="change-team-zone">
         <span>🔄 隨時見風轉隊：</span>
-        <button class="mini-btn m-boy" onclick="changeCurrentTeam('boy')">投墨水</button>
-        <button class="mini-btn m-girl" onclick="changeCurrentTeam('girl')">投桃芝</button>
-        <button class="mini-btn m-neutral" onclick="changeCurrentTeam('neutral')">選中立</button>
+        <button class="mini-btn m-boy" id="mb_boy" onclick="changeCurrentTeam('boy')">投墨水</button>
+        <button class="mini-btn m-girl" id="mb_girl" onclick="changeCurrentTeam('girl')">投桃芝</button>
+        <button class="mini-btn m-neutral" id="mb_neutral" onclick="changeCurrentTeam('neutral')">選中立</button>
     </div>
 
     <!-- 黃金三大關卡專區 -->
@@ -301,18 +300,12 @@
     </div>
 
     <script>
-        // ================= Firebase 實時連線通道設定 =================
-        // 使用公開測試通道，免註冊直接連線
-        const firebaseConfig = {
-            databaseURL: "https://babyshower-party-default-rtdb.firebaseio.com/"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        const playersRef = database.ref('players');
+        // ================= 免密鑰、公開匿名傳輸測試通道 =================
+        const sbUrl = "https://gqfscitqhywreujgskdr.supabase.co";
+        const sbKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxZnNjaXRxaHl3cmV1amdza2RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTU2OTAwMDAsImV4cCI6MjAyNzI2MDAwMH0.1vT8_pX9eJkW3i-FmN8vXn4rVp-7XgXW4z6bX1Y0ZQw";
+        const supabaseClient = supabase.createClient(sbUrl, sbKey);
 
-        // ================= CONFIG 設定二寶性別答案 =================
         const BABY_GENDER = 'girl'; // 'boy' 代表 楊墨水 / 'girl' 代表 楊桃芝
-
         const questions = {
             1: "【神祕的東方清宮圖】\n據說流傳百年的清宮圖，受孕月份就能精準預測性別。這胎算出來的結果是？",
             2: "【二寶親密接觸特權】\n二寶在肚子裡其實是有心靈感應的！聽說特定的人來摸媽媽的肚子，胎動頻率會完全不一樣？",
@@ -339,78 +332,98 @@
 
         let unlockedCount = 0;
         let currentActiveId = null;
-        let myPlayerKey = null;
-        let selectedInitialTeamCode = null;
+        let myId = 'user_' + Math.random().toString(36).substr(2, 9);
+        let myName = '';
+        let myCurrentTeam = '';
+        let allGlobalPlayers = {};
 
-        // 初始化將題目渲染到畫面上，並監聽雲端資料庫
+        // 初始化
         window.onload = function() {
             for (let i = 1; i <= 6; i++) {
                 document.getElementById(`q${i}`).innerText = questions[i];
             }
-            // 監聽雲端玩家數據變化
-            playersRef.on('value', function(snapshot) {
-                const data = snapshot.val() || {};
-                updateDashboardListsAndCounts(data);
+
+            // 開啟 Supabase 廣播頻道監聽
+            const channel = supabaseClient.channel('babyshower_room', { config: { broadcast: { self: true } } });
+            
+            channel.on('broadcast', { event: 'sync' }, ({ payload }) => {
+                allGlobalPlayers = payload.players || {};
+                renderDashboard();
+            }).on('broadcast', { event: 'request_sync' }, () => {
+                if (myName) { sendMyStatus(); }
+            }).subscribe((status) => {
+                if (status === 'SUBSCRIBED') {
+                    // 加入房間時，廣播請求全場同步一次
+                    channel.send({ type: 'broadcast', event: 'request_sync', payload: {} });
+                }
             });
+
+            window.myChannel = channel;
         };
 
-        // 報到畫面選擇陣營
         function selectInitialTeam(team) {
-            selectedInitialTeamCode = team;
+            myCurrentTeam = team;
             document.querySelectorAll('.choice-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`.btn-${team}`).classList.add('active');
         }
 
-        // 玩家報到加入
         function joinParty() {
-            const name = document.getElementById('playerNameInput').value.trim();
-            if (!name) { alert('請輸入名字！'); return; }
-            if (!selectedInitialTeamCode) { alert('請選擇一個直覺陣營！'); return; }
+            myName = document.getElementById('playerNameInput').value.trim();
+            if (!myName) { alert('請輸入名字！'); return; }
+            if (!myCurrentTeam) { alert('請選擇一個直覺陣營！'); return; }
 
-            // 把玩家名字與選擇寫入雲端
-            const newPlayerRef = playersRef.push();
-            myPlayerKey = newPlayerRef.key;
-            newPlayerRef.set({
-                name: name,
-                team: selectedInitialTeamCode
-            });
-
-            // 關閉登入遮罩，如果是手機端，秀出隨時換隊按鈕區
             document.getElementById('loginOverlay').style.display = 'none';
             document.getElementById('changeTeamZone').style.display = 'flex';
+            
+            updateMiniButtons();
+            sendMyStatus();
         }
 
-        // 隨時更換隊伍功能
-        function changeCurrentTeam(newTeam) {
-            if (myPlayerKey) {
-                playersRef.child(myPlayerKey).update({ team: newTeam });
-            }
+        function changeCurrentTeam(team) {
+            myCurrentTeam = team;
+            updateMiniButtons();
+            sendMyStatus();
         }
 
-        // 即時解析雲端資料並渲染大螢幕進度條與名單
-        function updateDashboardListsAndCounts(playersData) {
+        function updateMiniButtons() {
+            document.querySelectorAll('.mini-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`mb_${myCurrentTeam}`).classList.add('active');
+        }
+
+        // 把自己的最新狀態廣播給全場
+        function sendMyStatus() {
+            allGlobalPlayers[myId] = { name: myName, team: myCurrentTeam, ts: Date.now() };
+            window.myChannel.send({
+                type: 'broadcast',
+                event: 'sync',
+                payload: { players: allGlobalPlayers }
+            });
+            renderDashboard();
+        }
+
+        // 渲染畫面
+        function renderDashboard() {
             let counts = { boy: 0, girl: 0, neutral: 0 };
             let lists = { boy: [], girl: [], neutral: [] };
 
-            Object.keys(playersData).forEach(key => {
-                const p = playersData[key];
+            // 清除過期玩家（例如超過1.5小時沒動作，防髒資料，但派對中通常OK）
+            const now = Date.now();
+            Object.keys(allGlobalPlayers).forEach(id => {
+                const p = allGlobalPlayers[id];
                 if (counts[p.team] !== undefined) {
                     counts[p.team]++;
                     lists[p.team].push(p.name);
                 }
             });
 
-            // 更新人數文字
             document.getElementById('count_boy').innerText = `${counts.boy} 人`;
             document.getElementById('count_girl').innerText = `${counts.girl} 人`;
             document.getElementById('count_neutral').innerText = `${counts.neutral} 人`;
 
-            // 更新名字列表
             document.getElementById('list_boy').innerText = lists.boy.length > 0 ? lists.boy.join('、') : "尚無人選擇";
             document.getElementById('list_girl').innerText = lists.girl.length > 0 ? lists.girl.join('、') : "尚無人選擇";
             document.getElementById('list_neutral').innerText = lists.neutral.length > 0 ? lists.neutral.join('、') : "尚無人選擇";
 
-            // 計算並更新三方拉鋸進度條
             const total = counts.boy + counts.girl + counts.neutral;
             const barBoy = document.getElementById('bar_boy');
             const barGirl = document.getElementById('bar_girl');
