@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🌈 二寶降臨：全場極速解密牆 🔍</title>
-    <!-- 引入 Supabase 官方實時連線套件 -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -192,7 +191,6 @@
 </head>
 <body>
 
-    <!-- 報到/選擇陣營畫面 -->
     <div id="loginOverlay" class="login-overlay">
         <div class="login-box">
             <h2 style="color: #4a4a4a; margin-bottom: 5px;">👶 歡迎參加派對 🔍</h2>
@@ -215,7 +213,6 @@
         <div class="subtitle">到底是 <span class="b-name">🖋️ 楊墨水</span> 還是 <span class="g-name">🍹 楊桃芝</span> ？親友團大激戰！</div>
     </div>
 
-    <!-- 頂部：雲端實時同步數據與名單面板 -->
     <div class="dashboard">
         <div class="poll-title">📊 雲端網頁實時同步：全場預測分布名單</div>
         <div class="poll-columns">
@@ -235,7 +232,6 @@
                 <div class="box-list" id="list_neutral">尚無人選擇</div>
             </div>
         </div>
-        <!-- 三方動態比例條 -->
         <div class="bar-container">
             <div class="bar-boy" id="bar_boy" style="width: 33.3%"></div>
             <div class="bar-girl" id="bar_girl" style="width: 33.3%"></div>
@@ -243,7 +239,6 @@
         </div>
     </div>
 
-    <!-- 手機端玩家隨時更換隊伍的快捷按鈕區 -->
     <div id="changeTeamZone" class="change-team-zone">
         <span>🔄 隨時見風轉隊：</span>
         <button class="mini-btn m-boy" id="mb_boy" onclick="changeCurrentTeam('boy')">投墨水</button>
@@ -251,7 +246,6 @@
         <button class="mini-btn m-neutral" id="mb_neutral" onclick="changeCurrentTeam('neutral')">選中立</button>
     </div>
 
-    <!-- 黃金三大關卡專區 -->
     <div class="game-section">
         <div class="section-title">🎮 本日特派任務：三大黃金關卡（點擊看說明）</div>
         <div class="game-grid">
@@ -261,7 +255,6 @@
         </div>
     </div>
 
-    <!-- 密碼牆 -->
     <div class="grid-container">
         <div class="lock-card" id="card1"><div class="q-icon">🗺️</div><div class="q-number">線索 1</div><div class="q-text" id="q1">載入中...</div><button class="unlock-btn" onclick="unlock(1)">🔒 贏家點此觀看答案</button></div>
         <div class="lock-card" id="card2"><div class="q-icon">🤰</div><div class="q-number">線索 2</div><div class="q-text" id="q2">載入中...</div><button class="unlock-btn" onclick="unlock(2)">🔒 贏家點此觀看答案</button></div>
@@ -273,7 +266,6 @@
 
     <button class="reveal-btn" id="revealBtn" onclick="startCountdown()">✨ 答案就在眼前，啟動終極倒數！ ✨</button>
 
-    <!-- 遊戲說明視窗 -->
     <div class="modal" id="gameModal">
         <div class="modal-content">
             <div class="modal-title" id="gameModalTitle">關卡名稱</div>
@@ -282,7 +274,6 @@
         </div>
     </div>
 
-    <!-- 贏家秘密答案視窗 -->
     <div class="modal" id="clueModal">
         <div class="modal-content">
             <div class="modal-title" id="modalTitle">🔑 贏家專屬悄悄話時間</div>
@@ -332,33 +323,52 @@
 
         let unlockedCount = 0;
         let currentActiveId = null;
-        let myId = 'user_' + Math.random().toString(36).substr(2, 9);
-        let myName = '';
-        let myCurrentTeam = '';
-        let allGlobalPlayers = {};
+        
+        // 核心修正：利用 LocalStorage 來讓當前裝置擁有固定的唯一 ID，防止重複或遺失
+        let myId = localStorage.getItem('party_user_id');
+        if (!myId) {
+            myId = 'user_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('party_user_id', myId);
+        }
 
-        // 初始化
+        let myName = localStorage.getItem('party_user_name') || '';
+        let myCurrentTeam = localStorage.getItem('party_user_team') || '';
+        let allGlobalPlayers = {};
+        let channel = null;
+
         window.onload = function() {
             for (let i = 1; i <= 6; i++) {
                 document.getElementById(`q${i}`).innerText = questions[i];
             }
 
-            // 開啟 Supabase 廣播頻道監聽
-            const channel = supabaseClient.channel('babyshower_room', { config: { broadcast: { self: true } } });
+            // 建立廣播頻道
+            channel = supabaseClient.channel('babyshower_room', { config: { broadcast: { self: true } } });
             
             channel.on('broadcast', { event: 'sync' }, ({ payload }) => {
-                allGlobalPlayers = payload.players || {};
+                // 核心：把收到的新玩家資料與本機舊資料綜合合併
+                if (payload && payload.player) {
+                    allGlobalPlayers[payload.player.id] = payload.player;
+                }
+                if (payload && payload.allPlayers) {
+                    allGlobalPlayers = { ...allGlobalPlayers, ...payload.allPlayers };
+                }
                 renderDashboard();
             }).on('broadcast', { event: 'request_sync' }, () => {
-                if (myName) { sendMyStatus(); }
+                // 當新裝置進來請求同步時，如果你已經登入，主動把你的資料發送給他
+                if (myName) { sendMyStatus(false); }
             }).subscribe((status) => {
                 if (status === 'SUBSCRIBED') {
-                    // 加入房間時，廣播請求全場同步一次
+                    // 如果這台裝置以前就登入過，直接恢復狀態並要求全場同步
+                    if (myName) {
+                        document.getElementById('loginOverlay').style.display = 'none';
+                        document.getElementById('changeTeamZone').style.display = 'flex';
+                        updateMiniButtons();
+                        sendMyStatus(true);
+                    }
+                    // 向全場索取目前已存在的名單
                     channel.send({ type: 'broadcast', event: 'request_sync', payload: {} });
                 }
             });
-
-            window.myChannel = channel;
         };
 
         function selectInitialTeam(team) {
@@ -372,17 +382,21 @@
             if (!myName) { alert('請輸入名字！'); return; }
             if (!myCurrentTeam) { alert('請選擇一個直覺陣營！'); return; }
 
+            localStorage.setItem('party_user_name', myName);
+            localStorage.setItem('party_user_team', myCurrentTeam);
+
             document.getElementById('loginOverlay').style.display = 'none';
             document.getElementById('changeTeamZone').style.display = 'flex';
             
             updateMiniButtons();
-            sendMyStatus();
+            sendMyStatus(true); 
         }
 
         function changeCurrentTeam(team) {
             myCurrentTeam = team;
+            localStorage.setItem('party_user_team', team);
             updateMiniButtons();
-            sendMyStatus();
+            sendMyStatus(false); // 狀態改變，通知所有人
         }
 
         function updateMiniButtons() {
@@ -390,24 +404,35 @@
             document.getElementById(`mb_${myCurrentTeam}`).classList.add('active');
         }
 
-        // 把自己的最新狀態廣播給全場
-        function sendMyStatus() {
-            allGlobalPlayers[myId] = { name: myName, team: myCurrentTeam, ts: Date.now() };
-            window.myChannel.send({
-                type: 'broadcast',
-                event: 'sync',
-                payload: { players: allGlobalPlayers }
-            });
+        // 核心：發送個人狀態，並視情況要求大家回傳全體名單（廣播綜合）
+        function sendMyStatus(requestAll = false) {
+            const myData = { id: myId, name: myName, team: myCurrentTeam, ts: Date.now() };
+            allGlobalPlayers[myId] = myData;
+
+            if (channel) {
+                // 1. 先把自己最新的選擇發出去
+                channel.send({
+                    type: 'broadcast',
+                    event: 'sync',
+                    payload: { player: myData }
+                });
+
+                // 2. 如果是新加入，把當前自己已知的所有名單一併打包發出去，幫彼此補齊盲點
+                if (requestAll) {
+                    channel.send({
+                        type: 'broadcast',
+                        event: 'sync',
+                        payload: { allPlayers: allGlobalPlayers }
+                    });
+                }
+            }
             renderDashboard();
         }
 
-        // 渲染畫面
         function renderDashboard() {
             let counts = { boy: 0, girl: 0, neutral: 0 };
             let lists = { boy: [], girl: [], neutral: [] };
 
-            // 清除過期玩家（例如超過1.5小時沒動作，防髒資料，但派對中通常OK）
-            const now = Date.now();
             Object.keys(allGlobalPlayers).forEach(id => {
                 const p = allGlobalPlayers[id];
                 if (counts[p.team] !== undefined) {
@@ -452,56 +477,4 @@
             if (!targetCard.classList.contains('unlocked')) {
                 targetCard.classList.add('unlocked');
                 unlockedCount++;
-                targetCard.querySelector('.unlock-btn').innerText = "👁️ 贏家已閱讀";
-            }
-            document.getElementById('clueAnswerSecret').style.display = 'none';
-            document.getElementById('secretBtn').style.display = 'inline-block';
-            document.getElementById('clueModal').style.display = 'flex';
-        }
-
-        function revealSecretAnswer() {
-            document.getElementById('secretBtn').style.display = 'none';
-            const secretZone = document.getElementById('clueAnswerSecret');
-            secretZone.innerText = answers[currentActiveId];
-            secretZone.style.display = 'block';
-        }
-
-        function closeModal() {
-            document.getElementById('clueModal').style.display = 'none';
-            if (unlockedCount === 6) {
-                document.getElementById('revealBtn').style.display = 'block';
-                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-            }
-        }
-
-        function startCountdown() {
-            const overlay = document.getElementById('countdownOverlay');
-            overlay.style.display = 'flex';
-            let count = 5;
-            overlay.innerText = count;
-            const timer = setInterval(() => {
-                count--;
-                if (count > 0) { overlay.innerText = count; }
-                else if (count === 0) { overlay.innerText = "✨ 二寶到底是... ✨"; overlay.style.fontSize = "5rem"; }
-                else { clearInterval(timer); overlay.style.display = 'none'; showResult(); }
-            }, 1000);
-        }
-
-        function showResult() {
-            const resultOverlay = document.getElementById('resultOverlay');
-            const resultTitle = document.getElementById('resultTitle');
-            const resultSub = document.getElementById('resultSub');
-            if (BABY_GENDER === 'boy') {
-                resultOverlay.classList.add('bg-boy');
-                resultTitle.innerText = "💙 It's a BOY! 💙";
-                resultSub.innerHTML = "歡迎二寶 <span style='color:#fff; font-size:3rem; font-weight:900;'>【楊墨水 🖋️】</span> 來報到！<br>大寶哥哥以後有弟弟可以一起玩車車闖天下了！🏎️✨";
-            } else {
-                resultOverlay.classList.add('bg-girl');
-                resultTitle.innerText = "💗 It's a GIRL! 💗";
-                resultSub.innerHTML = "歡迎二寶 <span style='color:#fff; font-size:3rem; font-weight:900;'>【楊桃芝 🍹】</span> 來報到！<br>恭喜湊成一個『好』字！大寶有貼心的妹妹，全家的小心肝！🎀✨";
-            }
-            resultOverlay.style.display = 'flex';
-        }
-    </script>
-</body>
-</html>
+                targetCard.querySelector('.unlock-btn').innerText
