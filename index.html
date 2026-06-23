@@ -47,7 +47,7 @@
 
         .login-box {
             background: white;
-            padding: 40px 30px;
+            padding: 35px 25px;
             border-radius: 32px;
             box-shadow: 0 20px 50px rgba(108, 92, 231, 0.1);
             max-width: 420px;
@@ -57,7 +57,7 @@
         }
 
         .login-box h2 { font-size: 1.8rem; margin: 0 0 8px 0; color: #34495e; font-weight: 900; }
-        .login-box p { color: #95a5a6; font-size: 0.95rem; margin-bottom: 25px; }
+        .login-box p { color: #95a5a6; font-size: 0.95rem; margin-bottom: 20px; }
 
         .login-box input {
             width: 85%;
@@ -65,7 +65,7 @@
             font-size: 1.15rem;
             border: 2px solid #f1f2f6;
             border-radius: 20px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             text-align: center;
             outline: none;
             background: #fbfbfc;
@@ -73,8 +73,8 @@
         }
         .login-box input:focus { border-color: #a29bfe; background: white; }
 
-        .choice-title { font-size: 1.05rem; font-weight: bold; margin-bottom: 15px; color: #57606f; }
-        .choice-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; }
+        .choice-title { font-size: 1.05rem; font-weight: bold; margin-bottom: 12px; color: #57606f; }
+        .choice-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; }
         
         .btn-select {
             padding: 14px;
@@ -91,14 +91,14 @@
         .btn-select.active.b { background: var(--boy-grad); color: white; border-color: transparent; }
         .btn-select.active.g { background: var(--girl-grad); color: white; border-color: transparent; }
 
-        /* 主標題區 */
+        /* 主頁面頭部 */
         .header-container { text-align: center; margin-bottom: 30px; position: relative; width: 100%; max-width: 1100px; }
         h1 { font-size: 2.8rem; margin: 0 0 10px 0; color: #2c3e50; font-weight: 900; text-shadow: 2px 2px 0px white; }
         .sub-tag { font-size: 1.1rem; color: #7f8c8d; background: white; padding: 10px 30px; border-radius: 50px; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.02); font-weight: bold; border: 1px solid #f1f2f6; }
         .host-toggle-icon { position: absolute; right: 10px; top: 10px; font-size: 1.6rem; cursor: pointer; opacity: 0.25; transition: opacity 0.2s; }
         .host-toggle-icon:hover { opacity: 0.8; }
 
-        /* 實時戰況看板 (已改為帥氣對稱雙欄排版) */
+        /* 實時戰況看板 */
         .status-board {
             background: white;
             border-radius: 32px;
@@ -120,7 +120,7 @@
 
         .cb { color: #54a0ff; } .cg { color: #ff7675; }
 
-        /* 絢麗對稱比例條 */
+        /* 比例條 */
         .ratio-bar-wrapper { width: 100%; height: 22px; background: #f1f2f6; border-radius: 50px; overflow: hidden; display: flex; margin-top: 25px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); }
         .rb-b { background: var(--boy-grad); transition: width 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .rb-g { background: var(--girl-grad); transition: width 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -164,13 +164,13 @@
         .cb-b { background: #54a0ff; } .cb-g { background: #ff7675; } .cb-close { background: #1e272e; }
         .btn-master-reset { background: #ff4757; color: white; border: none; padding: 12px 30px; font-size: 1rem; border-radius: 14px; cursor: pointer; font-weight: bold; margin-top: 20px; }
 
-        /* 馬卡龍彈出視窗 */
+        /* 輕奢馬卡龍彈出視窗 */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(45, 52, 54, 0.7); backdrop-filter: blur(5px); justify-content: center; align-items: center; }
         .modal-content { background: white; padding: 35px 25px; border-radius: 32px; width: 85%; max-width: 460px; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.15); border: 2px solid #fff; }
         .secret-box { font-size: 1.15rem; line-height: 1.6; background: #fffaf0; padding: 22px 18px; border-radius: 20px; border: 2px dashed #ffa502; text-align: left; margin: 20px 0; color: #2f3542; font-weight: bold; }
         .btn-close { background: #2c3e50; color: white; border: none; padding: 14px 30px; font-size: 1.05rem; border-radius: 18px; cursor: pointer; font-weight: bold; width: 100%; box-shadow: var(--btn-shadow); }
 
-        /* 📱 手機行動端 RWD 雙欄自適應完美優化 */
+        /* 📱 手機行動端 RWD 雙欄自適應 */
         @media (max-width: 767px) {
             body { padding: 15px 10px; }
             h1 { font-size: 1.8rem; margin-bottom: 5px; }
@@ -216,7 +216,12 @@
                 <button class="btn-select b" onclick="selectInitialTeam('boy')">💙 押寶：楊墨水 (男)</button>
                 <button class="btn-select g" onclick="selectInitialTeam('girl')">💗 押寶：楊桃芝 (女)</button>
             </div>
-            <button class="btn-view" style="padding:15px; font-size:1.1rem; border-radius:20px;" onclick="joinParty()">🚀 綁定裝置並進入解密牆</button>
+            <button class="btn-view" style="padding:15px; font-size:1.1rem; border-radius:20px; margin-bottom: 15px;" onclick="joinParty()">🚀 綁定裝置並進入解密牆</button>
+            
+            <!-- 核心優化：主辦人專屬分流綠色通道 -->
+            <div style="border-top: 1px dashed #eee; padding-top: 15px; margin-top: 15px;">
+                <button class="btn-select" style="padding: 10px 20px; font-size: 0.9rem; background: #f1f2f6; width: 100%; border-radius: 15px; color: #747d8c;" onclick="joinAsHostDirectly()">⚙️ 主辦人 / 大螢幕專屬登入</button>
+            </div>
         </div>
     </div>
 
@@ -227,7 +232,7 @@
         <div class="host-toggle-icon" onclick="promptHostMode()">⚙️</div>
     </div>
 
-    <!-- 實時狀態看板 (已完美改為雙欄對稱) -->
+    <!-- 實時狀態看板 -->
     <div class="status-board">
         <div class="board-grid">
             <div class="team-card-box">
@@ -268,37 +273,37 @@
     <div class="clue-grid">
         <div class="clue-card" id="card1">
             <div class="c-icon">🗺️</div><div class="c-badge">線索 1</div>
-            <div class="c-text">【神祕東方清宮圖】受孕月份預測結果是？</div>
+            <div class="c-text">【神祕東方清宮圖】<br>受孕月份預測結果是？</div>
             <button class="btn-view" onclick="triggerOpenClue(1)">🔒 閱讀答案</button>
             <div class="card-status-text" id="status1" style="color:#95a5a6">等待主辦人分發權限</div>
         </div>
         <div class="clue-card" id="card2">
             <div class="c-icon">🤰</div><div class="c-badge">線索 2</div>
-            <div class="c-text">【二寶親密接觸特權】誰摸肚子胎動不一樣？</div>
+            <div class="c-text">【二寶親密接觸特權】<br>誰摸肚子胎動不一樣？</div>
             <button class="btn-view" onclick="triggerOpenClue(2)">🔒 閱讀答案</button>
             <div class="card-status-text" id="status2" style="color:#95a5a6">等待主辦人分發權限</div>
         </div>
         <div class="clue-card" id="card3">
             <div class="c-icon">👶</div><div class="c-badge">線索 3</div>
-            <div class="c-text">【大寶的玄學直覺】大寶最近狂摸肚子都喊什麼？</div>
+            <div class="c-text">【大寶的玄學直覺】<br>大寶最近狂摸肚子都喊什麼？</div>
             <button class="btn-view" onclick="triggerOpenClue(3)">🔒 閱讀答案</button>
             <div class="card-status-text" id="status3" style="color:#95a5a6">等待主辦人分發權限</div>
         </div>
         <div class="clue-card" id="card4">
             <div class="c-icon">✨</div><div class="c-badge">線索 4</div>
-            <div class="c-text">【驚人外貌學傳說】這胎媽媽的顏值狀態是？</div>
+            <div class="c-text">【驚人外貌學傳說】<br>這胎媽媽的顏值狀態是？</div>
             <button class="btn-view" onclick="triggerOpenClue(4)">🔒 閱讀答案</button>
             <div class="card-status-text" id="status4" style="color:#95a5a6">等待主辦人分發權限</div>
         </div>
         <div class="clue-card" id="card5">
             <div class="c-icon">👀</div><div class="c-badge">線索 5</div>
-            <div class="c-text">【肚型外觀傳說】形狀較尖、突出懷男；渾圓飽滿懷女。</div>
+            <div class="c-text">【肚型外觀傳說】<br>形狀較尖、突出懷男；渾圓飽滿懷女。</div>
             <button class="btn-view" onclick="triggerOpenClue(5)">🔒 閱讀答案</button>
             <div class="card-status-text" id="status5" style="color:#95a5a6">等待主辦人分發權限</div>
         </div>
         <div class="clue-card" id="card6">
             <div class="c-icon">🍋</div><div class="c-badge">線索 6</div>
-            <div class="c-text">【酸男辣女口味大洗牌】前三個月的複雜口味破解</div>
+            <div class="c-text">【酸男辣女口味大洗牌】<br>前三個月的複雜口味破解</div>
             <button class="btn-view" onclick="triggerOpenClue(6)">🔒 閱讀答案</button>
             <div class="card-status-text" id="status6" style="color:#95a5a6">等待主辦人分發權限</div>
         </div>
@@ -306,11 +311,11 @@
 
     <!-- 隱藏式主辦人後台控制區 -->
     <div class="host-control-panel" id="hostControlPanel">
-        <h3 style="margin:0 0 10px 0; color:#eccc68;">🛠️ 核心主辦人遠端權限控制台 (密碼: 1234)</h3>
+        <h3 style="margin:0 0 10px 0; color:#eccc68;">🛠️ 核心主辦人遠端權限控制台</h3>
         <p style="margin:0 0 15px 0; font-size:0.9rem; color:#a4b0be;">控制哪一隊在玩完賽事後可以解鎖對應的手機線索</p>
         <div class="control-grid" id="controlGridArea"></div>
         
-        <!-- 核心升級：雲端實時大抽獎介面 -->
+        <!-- 雲端實時大抽獎介面 -->
         <div style="margin-top:30px; border-top: 2px dashed #444; padding-top:20px;">
             <h3 style="margin:0 0 10px 0; color:#ffb142;">🎁 最終贏家實時抽獎系統 (線下實體揭曉後使用)</h3>
             <p style="margin:0 0 20px 0; font-size:0.9rem; color:#a4b0be;">線下答案開出後，一鍵遠端同步在全場手機與投影幕上高調宣佈 3 位中獎幸運兒！</p>
@@ -341,14 +346,12 @@
         </div>
     </div>
 
-    <!-- 核心升級：全球實時同步巨型抽獎公告視窗 -->
+    <!-- 實時同步巨型抽獎公告視窗 -->
     <div class="modal" id="winnerModal">
         <div class="modal-content" style="border: 4px solid #ffb142; max-width:500px;">
             <h2 style="color:#ff9f43; margin-top:0; font-weight:900;">🎉 恭喜幸運中獎者！ 🎉</h2>
             <h3 id="winnerTeamTitle" style="margin:5px 0 20px 0; color:#2c3e50;"></h3>
-            <div class="secret-box" id="winnerNamesDisplay" style="background:#fffdf0; text-align:center; font-size:1.4rem; line-height:2.2;">
-                <!-- 名字將被實時塞入 -->
-            </div>
+            <div class="secret-box" id="winnerNamesDisplay" style="background:#fffdf0; text-align:center; font-size:1.4rem; line-height:2.2;"></div>
             <button class="btn-close" style="background:linear-gradient(135deg, #ff9f43, #ff4757);" onclick="closeWinnerModal()">👑 領取獎品去！</button>
         </div>
     </div>
@@ -358,7 +361,7 @@
         let eventSource = null;
 
         const clueAnswers = {
-            1: "解析：經過爸爸媽媽嚴密的虛歲年齡與受孕月份對照，流傳百年的清宮圖最終答案明明白白寫著：【男生】！受孕月份結果為男宝！🖋️",
+            1: "解析：經過爸爸媽媽嚴密的虛歲年齡與受孕月份對照，流傳百年的清宮圖最終答案明明白白寫著：【男生】！受孕月份結果為男寶！🖋️",
             2: "解析：恭喜贏家解鎖親密福利！答案就是：【本隊所有女性隊員，現在可以直接上台實際觸摸媽媽的肚子，親自感受二寶的心靈感應！】🤰",
             3: "解析：大寶的預言直覺發威！他每次摸著媽媽的肚子，都非常肯定且興奮地狂喊：『是妹妹！肚子裡面是妹妹！』👶（🍹 楊桃芝隊 大加分！）",
             4: "解析：全場親友一起作證！媽媽從懷孕到現在，氣色一直都超好、皮膚亮晶晶，『一直都超級美！』✨ 依照外貌學，這絕對是貼心小公主的特徵呀！",
@@ -385,9 +388,14 @@
             initAdminControlUI();
             setupLiveStreaming();
             if (myName) {
+                // 如果是普通親友登入過，關閉遮罩並顯示轉隊按鈕
                 document.getElementById("loginOverlay").style.display = "none";
                 document.getElementById("changeTeamZone").style.display = "flex";
                 syncMiniBtnActive();
+            } else if (isHostMode) {
+                // 如果原本就是純主辦人模式，直接進入且不秀轉隊按鈕
+                document.getElementById("loginOverlay").style.display = "none";
+                document.getElementById("changeTeamZone").style.display = "none";
             }
             if (isHostMode) {
                 document.getElementById("hostControlPanel").style.display = "block";
@@ -446,6 +454,7 @@
         }
 
         function sendMyCurrentStatus() {
+            if (!myName) return; // 主辦人沒有名字與陣營，不發送個人狀態至雲端，徹底與抽獎隔离
             let pData = { id: myId, name: myName, team: myTeam };
             playersMap[myId] = pData;
             postBroadcast({ action: "player_update", player: pData });
@@ -478,7 +487,28 @@
             sendMyCurrentStatus();
         }
 
+        // 核心優化：主辦人專用免入池通道
+        function joinAsHostDirectly() {
+            let pin = prompt("請輸入主辦人管理密碼：");
+            if (pin === "1234") {
+                isHostMode = true;
+                myName = ""; // 清空名字，確保不計入親友名單
+                myTeam = ""; // 清空隊伍
+                localStorage.setItem("bs_ishost", "true");
+                localStorage.removeItem("bs_uname");
+                localStorage.removeItem("bs_uteam");
+                
+                document.getElementById("loginOverlay").style.display = "none";
+                document.getElementById("changeTeamZone").style.display = "none"; // 隱藏主辦人手機端的轉隊功能
+                document.getElementById("hostControlPanel").style.display = "block";
+                pushHostMasterState();
+            } else if (pin !== null) {
+                alert("密碼錯誤！請不要亂動爸媽的控制台喔～");
+            }
+        }
+
         function changeCurrentTeam(team) {
+            if (!myName) return; // 如果是主辦人身份，無法進行轉隊
             myTeam = team;
             localStorage.setItem("bs_uteam", team);
             syncMiniBtnActive();
@@ -492,8 +522,8 @@
         }
 
         function renderCoreDashboard() {
-            let counts = { boy: 0, girl: 0, neutral: 0 };
-            let lists = { boy: [], girl: [], neutral: [] };
+            let counts = { boy: 0, girl: 0 };
+            let lists = { boy: [], girl: [] };
 
             Object.values(playersMap).forEach(p => {
                 if (counts[p.team] !== undefined) {
@@ -526,7 +556,7 @@
                     tag.innerText = "🟢 全場皆可閱讀"; tag.style.color = "#2ed573";
                     card.classList.remove("my-locked");
                 } else {
-                    let isTarget = (myTeam === status);
+                    let isTarget = (myTeam === status || isHostMode); // 主辦人權限全開，隨時可看
                     let requiredName = (status === "boy" ? "楊墨水隊" : "楊桃芝隊");
                     tag.innerText = "🔒 僅限 " + requiredName + " 觀看";
                     tag.style.color = (status === "boy") ? "#2e86de" : "#f50057";
@@ -539,11 +569,11 @@
 
         function triggerOpenClue(clueId) {
             let status = permissionsMap[clueId];
-            if (status === "none") {
+            if (status === "none" && !isHostMode) {
                 alert("🔒 偷看攔截！該線索目前已被主辦人完全「關閉」，全場大家都無法查看。請等待下一輪遊戲開啟！");
                 return;
             }
-            if (status === "all" || myTeam === status) {
+            if (status === "all" || myTeam === status || isHostMode) {
                 document.getElementById("modalClueContent").innerText = clueAnswers[clueId];
                 document.getElementById("clueModal").style.display = "flex";
             } else {
@@ -571,7 +601,7 @@
                 document.getElementById("hostControlPanel").style.display = "block";
                 pushHostMasterState();
             } else if (pin !== null) {
-                alert("密碼錯誤！請不要亂動爸媽的筆電喔～");
+                alert("密碼錯誤！");
             }
         }
 
@@ -593,24 +623,20 @@
             renderPermissionUI();
         }
 
-        // ================== 核心升級：雲端實時抽獎算法 ==================
+        // ================== 雲端抽獎（已完全過濾主辦人與大螢幕） ==================
         function drawWinners(teamCode) {
-            // 過濾出目前在該陣營的所有真實親友（排除大螢幕控制端）
-            let eligiblePlayers = Object.values(playersMap).filter(p => p.team === teamCode && p.name !== "大螢幕" && p.name !== "主辦人" && p.name !== "");
+            // 只篩選目前留在該隊伍的真實親友
+            let eligiblePlayers = Object.values(playersMap).filter(p => p.team === teamCode && p.name !== "");
             
             if (eligiblePlayers.length === 0) {
-                alert("🚨 該隊伍目前空無一人！無法抽出幸運兒。請確認大家是否已經轉隊進來？");
+                alert("🚨 該隊伍目前空無一人！請確認親友是否已經轉隊進來？");
                 return;
             }
 
-            // 洗牌演算法 (Fisher-Yates Shuffle) 確保抽獎公平性
             let shuffled = eligiblePlayers.sort(() => 0.5 - Math.random());
-            
-            // 抽選 3 位，如果該隊總人數小於 3 人，則全給
             let luckyThree = shuffled.slice(0, 3).map(p => p.name);
             let displayTeamName = (teamCode === 'boy') ? "💙 楊墨水藍隊" : "💗 楊桃芝粉隊";
 
-            // 發射雲端廣播命令，全場同步震撼開獎
             postBroadcast({
                 action: "announce_winners",
                 teamName: displayTeamName,
@@ -619,13 +645,11 @@
         }
 
         function showWinnerModal(teamName, winnersList) {
-            document.getElementById("winnerTeamTitle").innerText = "恭喜來自【" + teamName + "】的超級贏家！";
-            
+            document.getElementById("winnerTeamTitle").innerText = "恭喜來自【" + teamName + "】的幸運中獎者！";
             let htmlHTML = "";
             for (let i = 0; i < winnersList.length; i++) {
-                htmlHTML += "👑 幸運兒 " + (i + 1) + " ：<span style='color:#6c5ce7; font-size:1.8rem; font-weight:900; text-shadow:1px 1px 0px white;'>" + winnersList[i] + "</span><br>";
+                htmlHTML += "👑 幸運兒 " + (i + 1) + " ：<span style='color:#6c5ce7; font-size:1.8rem; font-weight:900;'>" + winnersList[i] + "</span><br>";
             }
-            
             document.getElementById("winnerNamesDisplay").innerHTML = htmlHTML;
             document.getElementById("winnerModal").style.display = "flex";
         }
@@ -635,7 +659,7 @@
         }
 
         function triggerMasterReset() {
-            if (confirm("🚨 注意！點擊後全場手機與大螢幕將全部強制歸零並彈回登入首頁。確認要清空所有測試資料嗎？")) {
+            if (confirm("🚨 注意！點擊後全場手機將強制歸零重置。")) {
                 postBroadcast({ action: "trigger_clear" });
             }
         }
