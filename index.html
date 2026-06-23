@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌈 二寶降臨：全場極速解密牆 🔍</title>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #fff5f5 0%, #f0f3ff 100%);
+            --boy-main: #74b9ff;
+            --boy-grad: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+            --girl-main: #ff7675;
+            --girl-grad: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            --game-grad: linear-gradient(135deg, #ffeaa7 0%, #fad390 100%);
+            --card-border: #dfe6e9;
+        }
+
+        body {
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            background: var(--primary-gradient);
+            margin: 0;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: #2d3436;
+        }
+
+        .header-zone {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin: 0 0 10px 0;
+            color: #4a4a4a;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 10px 25px;
+            border-radius: 20px;
+            display: inline-block;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            font-weight: bold;
+        }
+
+        .subtitle span.b-name { color: #0984e3; }
+        .subtitle span.g-name { color: #d63031; }
+
+        /* 風向拉鋸戰面板 */
+        .dashboard {
+            background: white;
+            padding: 25px 40px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(108, 92, 231, 0.08);
+            margin-bottom: 30px;
+            width: 85%;
+            max-width: 750px;
+            text-align: center;
+        }
+
+        .poll-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #636e72;
+            margin-bottom: 15px;
+        }
+
+        .poll-teams-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .poll-team {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+        .team-boy { color: #2980b9; }
+        .team-girl { color: #c0392b; }
+
+        .counter-btn {
+            background: #f1f2f6;
+            border: none;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+        .counter-btn:hover { background: #e4e7eb; transform: scale(1.05); }
+
+        .count-display {
+            font-size: 2.2rem;
+            min-width: 50px;
+            text-align: center;
+            font-family: 'Impact', sans-serif;
+        }
+
+        .bar-container {
+            width: 100%;
+            height: 24px;
+            background: #dfe6e9;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .bar-boy { width: 50%; background: var(--boy-grad); transition: width 0.5s ease-in-out; }
+        .bar-girl { width: 50%; background: var(--girl-grad); transition: width 0.5s ease-in-out; }
+
+        /* 遊戲關卡專區 */
+        .game-section {
+            width: 85%;
+            max-width: 900px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #4a4a4a;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        .game-card {
+            background: var(--game-grad);
+            border: none;
+            border-radius: 20px;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #d35400;
+            cursor: pointer;
+            box-shadow: 0 6px 12px rgba(241, 196, 15, 0.15);
+            transition: all 0.2s;
+        }
+        .game-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 18px rgba(241, 196, 15, 0.25);
+        }
+
+        /* 密碼牆網格 (3x2 容納 6 個線索) */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            max-width: 1200px;
+            width: 100%;
+            margin-bottom: 40px;
+        }
+
+        .lock-card {
+            background: white;
+            border: 2px solid var(--card-border);
+            border-radius: 24px;
+            padding: 25px 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 280px;
+            box-sizing: border-box;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .lock-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(108, 92, 231, 0.1);
+            border-color: #a29bfe;
+        }
+
+        .lock-card .q-icon { font-size: 2.8rem; margin-bottom: 5px; }
+        .lock-card .q-number { font-size: 0.95rem; font-weight: bold; color: #6c5ce7; background: #eeecef; padding: 4px 14px; border-radius: 15px; margin-bottom: 12px; }
+        .lock-card .q-text { font-size: 1.1rem; font-weight: bold; color: #2d3436; line-height: 1.6; text-align: center; flex-grow: 1; display: flex; align-items: center; justify-content: center; white-space: pre-line; }
+
+        .unlock-btn {
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.05rem;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(108, 92, 231, 0.2);
+        }
+
+        .lock-card.unlocked { background: #fafafa; border-color: #b2bec3; opacity: 0.85; }
+        .lock-card.unlocked .q-number { background: #b2bec3; color: white; }
+        .lock-card.unlocked .unlock-btn { background: #b2bec3; box-shadow: none; }
+
+        /* 終極大按鈕 */
+        .reveal-btn {
+            background: linear-gradient(135deg, #ff7675, #6c5ce7);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.6rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(214, 48, 49, 0.25);
+            display: none;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.04); } 100% { transform: scale(1); } }
+
+        /* 彈出視窗 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(45, 52, 54, 0.9);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 40px;
+            border-radius: 30px;
+            max-width: 650px;
+            width: 85%;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
+        }
+        @keyframes popUp { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .modal-title { font-size: 2rem; color: #6c5ce7; font-weight: bold; margin-bottom: 25px; }
+
+        .game-desc-box {
+            font-size: 1.3rem;
+            line-height: 1.7;
+            color: #2d3436;
+            background: #fffdf0;
+            padding: 25px;
+            border-radius: 20px;
+            border: 2px solid #f1c40f;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .answer-secret-box {
+            display: none;
+            font-size: 1.5rem;
+            line-height: 1.7;
+            color: #2d3436;
+            background: #fff9f9;
+            padding: 30px;
+            border-radius: 20px;
+            border: 3px dashed #ff7675;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        .answer-secret-box::before { content: "🤫 贏家特權悄悄話："; display: block; font-weight: bold; color: #ff7675; margin-bottom: 10px; font-size: 1.2rem; }
+
+        .action-btn { color: white; border: none; padding: 14px 35px; font-size: 1.2rem; border-radius: 15px; cursor: pointer; margin: 8px; font-weight: bold; transition: all 0.2s; }
+        .secret-btn { background: linear-gradient(135deg, #ff7675, #6c5ce7); }
+        .close-btn { background-color: #2d3436; }
+
+        /* 倒數與結果 */
+        .countdown-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #2d3436; color: white; z-index: 200; justify-content: center; align-items: center; font-size: 12rem; font-weight: bold; }
+        .result-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 300; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; }
+        .result-title { font-size: 5.5rem; font-weight: 900; margin-bottom: 20px; text-shadow: 0 8px 20px rgba(0,0,0,0.2); animation: bounceIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards; }
+        .result-sub { font-size: 2.3rem; font-weight: bold; background: rgba(255, 255, 255, 0.2); padding: 15px 40px; border-radius: 40px; backdrop-filter: blur(5px); line-height: 1.5; }
+        .bg-boy { background: linear-gradient(135deg, #74b9ff, #0984e3); }
+        .bg-girl { background: linear-gradient(135deg, #ff7675, #d63031); }
+    </style>
+</head>
+<body>
+
+    <div class="header-zone">
+        <h1>🌈 二寶降臨：全場極速解密牆 🔍</h1>
+        <div class="subtitle">到底是 <span class="b-name">🖋️ 楊墨水</span> 還是 <span class="g-name">🍹 楊桃芝</span> ？親友團大激戰！</div>
+    </div>
+
+    <!-- 頂部：風向拉鋸戰面板 -->
+    <div class="dashboard">
+        <div class="poll-title">📊 買定離手！目前全場押寶統計</div>
+        <div class="poll-teams-wrapper">
+            <div class="poll-team team-boy">
+                <span>💙 楊墨水 隊:</span>
+                <button class="counter-btn" onclick="adjustCount('boy', -1)">-</button>
+                <span class="count-display" id="boyCount">10</span>
+                <button class="counter-btn" onclick="adjustCount('boy', 1)">+</button>
+            </div>
+            <div class="poll-team team-girl">
+                <span>💗 楊桃芝 隊:</span>
+                <button class="counter-btn" onclick="adjustCount('girl', -1)">-</button>
+                <span class="count-display" id="girlCount">10</span>
+                <button class="counter-btn" onclick="adjustCount('girl', 1)">+</button>
+            </div>
+        </div>
+        <div class="bar-container">
+            <div class="bar-boy" id="boyBar"></div>
+            <div class="bar-girl" id="girlBar"></div>
+        </div>
+    </div>
+
+    <!-- 黃金三大關卡專區 -->
+    <div class="game-section">
+        <div class="section-title">🎮 本日特派任務：三大黃金關卡（點擊看說明）</div>
+        <div class="game-grid">
+            <button class="game-card" onclick="openGameModal(1)">📏 第一關：媽媽肚圍超級盲猜</button>
+            <button class="game-card" onclick="openGameModal(2)">🎬 第二關：大寶心機讀心術</button>
+            <button class="game-card" onclick="openGameModal(3)">🎤 第三關：神鬼兒歌接唱填空</button>
+        </div>
+    </div>
+
+    <!-- 密碼牆 -->
+    <div class="grid-container">
+        <div class="lock-card" id="card1">
+            <div class="q-icon">🗺️</div>
+            <div class="q-number">線索 1</div>
+            <div class="q-text" id="q1">載入中...</div>
+            <button class="unlock-btn" onclick="unlock(1)">🔒 贏家點此觀看答案</button>
+        </div>
+        <div class="lock-card" id="card2">
+            <div class="q-icon">🤰</div>
+            <div class="q-number">線索 2</div>
+            <div class="q-text" id="q2">載入中...</div>
+            <button class="unlock-btn" onclick="unlock(2)">🔒 贏家點此觀看答案</button>
+        </div>
+        <div class="lock-card" id="card3">
+            <div class="q-icon">👶</div>
+            <div class="q-number">線索 3</div>
+            <div class="q-text" id="q3">載入中...</div>
+            <button class="unlock-btn" onclick="unlock(3)">🔒 贏家點此觀看答案</button>
+        </div>
+        <div class="lock-card" id="card4">
+            <div class="q-icon">✨</div>
+            <div class="q-number">線索 4</div>
+            <div class="q-text" id="q4">載入中...</div>
+            <button class="unlock-btn" onclick="unlock(4)">🔒 贏家點此觀看答案</button>
+        </div>
+        <div class="lock-card" id="card5">
+            <div class="q-icon">🧮</div>
+            <div class="q-number">線索 5</div>
+            <div class="q-text" id="q5">載入中...</div>
+            <button class="unlock-btn" onclick="unlock(5)">🔒 贏家點此觀看答案</button>
+        </div>
+        <div class="lock-card" id="card6">
+            <div class="q-icon">🍋</div>
+            <div class="q-number">線索 6</div>
+            <div class="q-text" id="q6">載入中...</div>
+            <button class="unlock-btn" onclick="unlock(6)">🔒 贏家點此觀看答案</button>
+        </div>
+    </div>
+
+    <button class="reveal-btn" id="revealBtn" onclick="startCountdown()">✨ 答案就在眼前，啟動終極倒數！ ✨</button>
+
+    <!-- 彈出視窗 A：遊戲說明視窗 -->
+    <div class="modal" id="gameModal">
+        <div class="modal-content">
+            <div class="modal-title" id="gameModalTitle">關卡名稱</div>
+            <div class="game-desc-box" id="gameModalDesc">關卡說明細節...</div>
+            <button class="action-btn close-btn" onclick="closeGameModal()">關閉，開始挑戰！</button>
+        </div>
+    </div>
+
+    <!-- 彈出視窗 B：贏家秘密答案視窗 -->
+    <div class="modal" id="clueModal">
+        <div class="modal-content">
+            <div class="modal-title" id="modalTitle">🔑 贏家專屬悄悄話時間</div>
+            <button class="action-btn secret-btn" id="secretBtn" onclick="revealSecretAnswer()">🔓 贏家代表點此解密（請把螢幕轉向代表）</button>
+            <div id="clueAnswerSecret" class="answer-secret-box">這是隱藏的秘密答案...</div>
+            <br>
+            <button class="action-btn close-btn" id="closeModalBtn" onclick="closeModal()">看完關閉（開啟全場轉隊時間）</button>
+        </div>
+    </div>
+
+    <div class="countdown-overlay" id="countdownOverlay">5</div>
+
+    <div class="result-overlay" id="resultOverlay">
+        <div class="result-title" id="resultTitle">It's...</div>
+        <div class="result-sub" id="resultSub">歡迎二寶來到我們家！✨</div>
+    </div>
+
+    <script>
+        // ================= CONFIG 設定二寶性別答案 =================
+        const BABY_GENDER = 'girl'; // 'boy' 代表 楊墨水 / 'girl' 代表 楊桃芝
+
+        // 6 個常駐大螢幕的題目
+        const questions = {
+            1: "【神祕的東方清宮圖】\n據說流傳百年的清宮圖，只要對照媽媽懷孕時的虛歲年齡與受孕月份，就能精準預測性別。這胎算出來的結果是？",
+            2: "【二寶親密接觸特權】\n二寶在肚子裡其實是有心靈感應的！聽說特定的人來摸媽媽的肚子，胎動頻率會完全不一樣？",
+            3: "【大寶的玄學讀心直覺】\n大家都說大寶的嘴自帶預言功能！大寶最近常常摸著媽媽的肚子，你們猜他平時都大喊些什麼？",
+            4: "【孕期顏值的驚人外貌學】\n民間有個超有名皮膚說法：『懷男生變醜、長痘痘；懷女生變美、皮膚發亮』。媽媽這幾個月來的狀態是？",
+            5: "【七七四十九神祕問娘口訣】\n古老算法老口訣：『七七四十九，問娘何月有？除去母生年，再加一十九。』依據媽媽的孕期數字計算出來的男女結果是？",
+            6: "【酸男辣女與苦甜大洗牌】\n傳統老話說『酸男辣女』，那不愛吃苦、抗拒甜食又代表什麼？快來破解媽媽這三個月來的複雜口味！"
+        };
+
+        // 6 個只有贏家可以偷看的秘密解析
+        const answers = {
+            1: "解析：經過爸爸媽媽嚴密的虛歲與月份對照，清宮圖最終計算出來的答案是：【男生】！🖋️ 楊墨水隊先得一分？",
+            2: "解析：恭喜贏家解鎖隱藏福利！答案就是：【本隊所有女性隊員，現在可以現場上台實際摸摸媽媽的肚子，親自感受二寶的魔力！】🤰（其餘男士及敵隊只能羨慕！）",
+            3: "解析：大寶每次摸媽媽的肚子，都非常肯定且興奮地狂喊：『是妹妹！肚子裡面是妹妹！』👶（大寶玄學發威，🍹 楊桃芝隊 大加分！）",
+            4: "解析：全場親友作證！媽媽從懷孕到現在，氣色一直都超好、皮膚亮晶晶，『一直都超級美！』✨ 依照外貌學來說，這根本就是小公主的特徵呀！",
+            5: "解析：經過繁雜的數學加減乘除，口訣最後算出來的餘數結果，明明白白指向了【男孩】！🖋️ 楊墨水再次拿到一劑強心針！",
+            6: "解析：媽媽前三個月有點排斥甜食，甚至變得不愛喝原本最愛的咖啡（怕苦），但是酸的辣的都很能吃！有酸有辣又有苦，台下偵探們開始燒腦了吧！"
+        };
+
+        // 3 個黃金關卡的遊戲說明
+        const gameDescriptions = {
+            1: "📐 【媽媽肚圍超級盲猜】\n\n現場 20 位親友單憑視覺，剪下一段你認為最符合媽媽當下『精準肚圍』的絲帶長度並寫上姓名。\n\n最後由大寶現場幫媽媽環繞開獎！量出來最接近、最有默契的隊伍，贏得『解鎖線索卡』特權！",
+            2: "🎬 【大寶心機讀心術】\n\n大螢幕會播放幾段『大寶日常說話』的趣味短片，在關鍵時刻影片會突然暫停！\n\n兩隊親友必須通靈盲猜大寶下一句會說出什麼可愛的童言童語？答對最多題的隊伍，將奪下核心線索的偷看權！",
+            3: "🎤 【神鬼兒歌接唱填空】\n\n最後的大對決！主持人會隨機播放經典的懷舊兒歌，但在關鍵歌詞時會突然消音，大螢幕會秀出填空題目。\n\n兩隊親友必須拍桌搶答，並現場大聲把正確的歌詞『接唱出來』！先拿到指定分數的隊伍獲勝！"
+        };
+        // =====================================================
+
+        let unlockedCount = 0;
+        const openedLocks = new Set();
+        let currentActiveId = null;
+
+        window.onload = function() {
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById(`q${i}`).innerText = questions[i];
+            }
+            updateProgressBar();
+        };
+
+        function openGameModal(gameId) {
+            const titles = {
+                1: "📏 第一關：媽媽肚圍超級盲猜",
+                2: "🎬 第二關：大寶心機讀心術",
+                3: "🎤 第三關：神鬼兒歌接唱填空"
+            };
+            document.getElementById('gameModalTitle').innerText = titles[gameId];
+            document.getElementById('gameModalDesc').innerText = gameDescriptions[gameId];
+            document.getElementById('gameModal').style.display = 'flex';
+        }
+
+        function closeGameModal() {
+            document.getElementById('gameModal').style.display = 'none';
+        }
+
+        function adjustCount(team, value) {
+            const element = document.getElementById(`${team}Count`);
+            let currentCount = parseInt(element.innerText);
+            currentCount += value;
+            if (currentCount < 0) currentCount = 0;
+            element.innerText = currentCount;
+            updateProgressBar();
+        }
+
+        function updateProgressBar() {
+            const boyNum = parseInt(document.getElementById('boyCount').innerText);
+            const girlNum = parseInt(document.getElementById('girlCount').innerText);
+            const total = boyNum + girlNum;
+            const boyBar = document.getElementById('boyBar');
+            const girlBar = document.getElementById('girlBar');
+            
+            if (total === 0) {
+                boyBar.style.width = '50%'; girlBar.style.width = '50%';
+            } else {
+                const boyPct = (boyNum / total) * 100; const girlPct = (girlNum / total) * 100;
+                boyBar.style.width = `${boyPct}%`; girlBar.style.width = `${girlPct}%`;
+            }
+        }
+
+        function unlock(id) {
+            currentActiveId = id;
+            const targetCard = document.getElementById(`card${id}`);
+            if (!targetCard.classList.contains('unlocked')) {
+                targetCard.classList.add('unlocked');
+                unlockedCount++;
+                openedLocks.add(id);
+                targetCard.querySelector('.unlock-btn').innerText = "👁️ 贏家已閱讀";
+            }
+            document.getElementById('clueAnswerSecret').style.display = 'none';
+            document.getElementById('secretBtn').style.display = 'inline-block';
+            document.getElementById('clueModal').style.display = 'flex';
+        }
+
+        function revealSecretAnswer() {
+            document.getElementById('secretBtn').style.display = 'none';
+            const secretZone = document.getElementById('clueAnswerSecret');
+            secretZone.innerText = answers[currentActiveId];
+            secretZone.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('clueModal').style.display = 'none';
+            if (unlockedCount === 6) {
+                document.getElementById('revealBtn').style.display = 'block';
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }
+        }
+
+        function startCountdown() {
+            const overlay = document.getElementById('countdownOverlay');
+            overlay.style.display = 'flex';
+            let count = 5;
+            overlay.innerText = count;
+
+            const timer = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    overlay.innerText = count;
+                } else if (count === 0) {
+                    overlay.innerText = "✨ 二寶到底是... ✨";
+                    overlay.style.fontSize = "5rem";
+                } else {
+                    clearInterval(timer);
+                    overlay.style.display = 'none';
+                    showResult();
+                }
+            }, 1000);
+        }
+
+        function showResult() {
+            const resultOverlay = document.getElementById('resultOverlay');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultSub = document.getElementById('resultSub');
+
+            if (BABY_GENDER === 'boy') {
+                resultOverlay.classList.add('bg-boy');
+                resultTitle.innerText = "💙 It's a BOY! 💙";
+                resultSub.innerHTML = "歡迎二寶 <span style='color:#fff; font-size:3rem; font-weight:900;'>【楊墨水 🖋️】</span> 來報到！<br>大寶哥哥以後有弟弟可以一起玩車車、調皮搗蛋闖天下了！🏎️✨";
+            } else {
+                resultOverlay.classList.add('bg-girl');
+                resultTitle.innerText = "💗 It's a GIRL! 💗";
+                resultSub.innerHTML = "歡迎二寶 <span style='color:#fff; font-size:3rem; font-weight:900;'>【楊桃芝 🍹】</span> 來報到！<br>恭喜湊成一個『好』字！大寶有貼心的妹妹，全家的小心肝！🎀✨";
+            }
+            resultOverlay.style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
