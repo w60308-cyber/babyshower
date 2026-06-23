@@ -313,6 +313,10 @@
         </div>
     </div>
 
+    <div style="margin-top: 60px; margin-bottom: 20px; text-align: center; opacity: 0.65;">
+        <button onclick="resetAllPlayers()" style="background: #e74c3c; color: white; border: none; padding: 10px 20px; font-size: 0.95rem; border-radius: 10px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">⚠️ 主辦人專用：全場測試資料完全歸零</button>
+    </div>
+
     <div class="countdown-overlay" id="countdownOverlay">5</div>
     <div class="result-overlay" id="resultOverlay">
         <div class="result-title" id="resultTitle">It's...</div>
@@ -349,7 +353,6 @@
         var myCurrentTeam = localStorage.getItem("party_user_team") || "";
         var allGlobalPlayers = {};
 
-        // 核心無敵通訊：改採用對等混合型 HTTPS 廣播中心
         var ntfyTopic = "w60308_cyber_babyshower_live_pool";
         var eventSource = null;
 
@@ -364,7 +367,6 @@
 
         function initLiveSync() {
             try {
-                // 建立永不中斷的全球 HTTPS 實時接收管道（走標準 443 埠，絕不被 5G/4G 分享器封鎖）
                 eventSource = new EventSource("https://ntfy.sh/" + ntfyTopic + "/sse");
                 
                 eventSource.onmessage = function(event) {
@@ -373,6 +375,14 @@
                         if (ntfyData.event === "message") {
                             var payload = JSON.parse(ntfyData.message);
                             
+                            // 核心：接收到全場歸零指令時，全自動抹除並重載
+                            if (payload.type === "clear_all") {
+                                localStorage.clear();
+                                allGlobalPlayers = {};
+                                renderDashboard();
+                                setTimeout(function() { location.reload(); }, 300);
+                                return;
+                            }
                             if (payload.type === "sync" && payload.player) {
                                 allGlobalPlayers[payload.player.id] = payload.player;
                                 renderDashboard();
@@ -382,20 +392,18 @@
                                 renderDashboard();
                             }
                             if (payload.type === "ask" && myName) {
-                                // 只要場上有新裝置發出詢問，我們就回傳資料幫他補齊全場名單
                                 sendMyStatus(true);
                             }
                         }
-                    } catch(e) { console.log(e); }
+                    } catch(e) {}
                 };
 
-                // 當管道就緒，如果是老玩家重新整理，或者是大螢幕，主動對全網發送同步請求
                 setTimeout(function() {
                     broadcastMessage({ type: "ask" });
                     if (myName) { sendMyStatus(true); }
                 }, 1000);
 
-            } catch(err) { console.log("連線建立異常"); }
+            } catch(err) {}
         }
 
         function broadcastMessage(obj) {
@@ -422,7 +430,7 @@
             localStorage.setItem("party_user_team", myCurrentTeam);
 
             enterMainWall();
-            sendMyStatus(true); // 剛加入，進行全網交叉打包大綜合
+            sendMyStatus(true); 
         }
 
         function enterMainWall() {
@@ -437,7 +445,7 @@
             myCurrentTeam = team;
             localStorage.setItem("party_user_team", team);
             updateMiniButtons();
-            sendMyStatus(false); // 僅更新個人換隊資訊
+            sendMyStatus(false);
         }
 
         function updateMiniButtons() {
@@ -450,14 +458,23 @@
             var myData = { id: myId, name: myName, team: myCurrentTeam, ts: Date.now() };
             allGlobalPlayers[myId] = myData;
 
-            // 1. 先同步自己的最新狀態
             broadcastMessage({ type: "sync", player: myData });
 
-            // 2. 如果是新加入或主動請求，把當前自己知道的所有綜合名單打包發出去，幫彼此消滅數據盲點
-            if (requestAll) {
+            if (isBulk) {
                 broadcastMessage({ type: "bulk", allPlayers: allGlobalPlayers });
             }
             renderDashboard();
+        }
+
+        // 核心歸零發射器
+        function resetAllPlayers() {
+            if (confirm("🚨 注意！點擊確定後，雲端會發射強制命令，讓全場所有人（包含大螢幕與親友手機）同步清除測試資料，一起退回重新輸入名字的報到畫面。確定要清除資料嗎？")) {
+                broadcastMessage({ type: "clear_all" });
+                localStorage.clear();
+                allGlobalPlayers = {};
+                renderDashboard();
+                setTimeout(function() { location.reload(); }, 300);
+            }
         }
 
         function renderDashboard() {
@@ -535,6 +552,7 @@
             }
         }
 
+        // 倒數與結果
         function startCountdown() {
             var overlay = document.getElementById("countdownOverlay");
             if (overlay) {
