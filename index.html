@@ -141,7 +141,7 @@
         .mission-card { background: var(--game-grad); border: none; border-radius: 22px; padding: 18px; font-size: 1.05rem; font-weight: bold; color: white; cursor: pointer; box-shadow: 0 8px 20px rgba(255,177,66,0.25); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .mission-card:hover { transform: translateY(-4px); box-shadow: 0 12px 25px rgba(255,177,66,0.35); }
 
-        /* 密碼牆六宮格 (標籤排版全面校正) */
+        /* 密碼牆六宮格 */
         .clue-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; max-width: 1100px; margin-bottom: 40px; }
         .clue-card { background: white; border: 2px solid #fff; border-radius: 28px; padding: 25px 20px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; min-height: 270px; box-sizing: border-box; box-shadow: var(--card-shadow); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .clue-card.my-locked { background: #f6f8fb; opacity: 0.75; border-color: #edf2f7; box-shadow: none; }
@@ -170,7 +170,7 @@
         .secret-box { font-size: 1.15rem; line-height: 1.6; background: #fffaf0; padding: 22px 18px; border-radius: 20px; border: 2px dashed #ffa502; text-align: left; margin: 20px 0; color: #2f3542; font-weight: bold; }
         .btn-close { background: #2c3e50; color: white; border: none; padding: 14px 30px; font-size: 1.05rem; border-radius: 18px; cursor: pointer; font-weight: bold; width: 100%; box-shadow: var(--btn-shadow); }
 
-        /* 📱 手機行動端 RWD 自適應 */
+        /* 📱 手機行動端 RWD 雙欄自適應 */
         @media (max-width: 767px) {
             body { padding: 15px 10px; }
             h1 { font-size: 1.8rem; margin-bottom: 5px; }
@@ -268,7 +268,7 @@
         </div>
     </div>
 
-    <!-- 六大密碼牆 (標籤嵌套與解鎖函式 100% 校正) -->
+    <!-- 六大密碼牆 -->
     <div class="clue-grid">
         <div class="clue-card" id="card1">
             <div class="c-icon">🗺️</div><div class="c-badge">線索 1</div>
@@ -301,8 +301,8 @@
             <div class="card-status-text" id="status5" style="color:#95a5a6">等待主辦人分發權限</div>
         </div>
         <div class="clue-card" id="card6">
-            <div class="c-icon">🍋</div><div class="c-badge">線索 6</div>
-            <div class="c-text">【酸男辣女口味大洗牌】<br>前三個月的複雜口味破解</div>
+            <div class="c-icon">🩺</div><div class="c-badge">線索 6</div>
+            <div class="c-text">【超音波檢驗師的反應】<br>檢驗過程中耐人尋味的神秘大笑？</div>
             <button class="btn-view" onclick="triggerOpenClue(6)">🔒 閱讀答案</button>
             <div class="card-status-text" id="status6" style="color:#95a5a6">等待主辦人分發權限</div>
         </div>
@@ -356,7 +356,7 @@
     </div>
 
     <script>
-        // 更換為全新且無流量上限的全球物聯網 MQTT 專用超導安全伺服器通道
+        // 工業級超導物聯網專用伺服器通道 (防 Rate Limit 與封鎖機制)
         const MQTT_TOPIC = "tw_taipei_babyshower_yang_2026_super_relay";
         let mqttClient = null;
 
@@ -366,16 +366,16 @@
             3: "解析：大寶的預言直覺發威！他每次摸著媽媽的肚子，都非常肯定且興奮地狂喊：『是妹妹！肚子裡面是妹妹！』👶（🍹 楊桃芝隊 大加分！）",
             4: "解析：全場親友一起作證！媽媽從懷孕到現在，氣色一直都超好、皮膚亮晶晶，『一直都超級美！』✨ 依照外貌學，這絕對是貼心小公主的特徵呀！",
             5: "解析：經過現場親友的銳利眼神鑑定，媽媽這胎的肚子形狀較尖、而且明顯往前突出！答案就是【肚型尖】！在傳統說法中，這可是男寶【楊墨水】的經典招牌特徵喔！🖋️",
-            6: "解析：口味驚天大洗牌！媽媽前三個月變得完全不愛喝原本最愛的咖啡（怕苦），對甜食也有些排斥，但是酸的和辣的都很能吃！酸辣皆收、苦甜不要，台下偵探們開始燒腦了吧！"
+            6: "提示內容：超音波檢驗師在檢查時，開口問媽媽覺得這胎是男寶還是女寶？媽媽很有自信地回答：『男寶！』接著檢驗師轉頭問爸爸，爸爸也點頭附和覺得是：『男寶！』結果...檢驗師聽完就突然神秘地大笑！🤣 這大笑背後的弦外之音，大家開始燒腦了吧！"
         };
 
         const gameDescs = {
             1: "📐 【媽媽肚圍超級盲猜】\n\n個人賽制！親友單憑視覺，剪下一段符合媽媽當下肚圍的絲帶長度並寫上姓名。\n\n量出來最接近、最有默契的那個人的隊伍，贏得解鎖線索特權！同時開放全場贏家選擇是否轉隊！",
-            2: "🎬 【大寶心機讀心術】\n\n大螢幕播放大寶日常說話短片。大家現場舉手搶答，盲猜大寶到底在說什麼？答對最多題的隊伍獲勝，主辦人解鎖對應線索，再度開啟贏家是否轉隊的抉擇時刻！",
-            3: "🎤 【神鬼兒歌接唱填空】\n\n最後大決戰！主持人隨機播放經典兒歌，在關鍵歌詞時會突然消音。\n\n全場瘋狂搶答，現場大聲把歌詞『唱/說出來』！答對最多題的隊伍獲勝！主辦人解鎖最後線索後，準備進行 offline 實體高潮揭曉！"
+            2: "🎬 【大寶心機讀心術】\n\n大螢幕播放大寶日常說話短片。在關鍵時刻影片會突然暫停！\n\n大家現場舉手搶答，盲猜大寶下一句會說什麼？答對最多題的隊伍獲勝，主辦人解鎖對應線索，再度開啟贏家是否轉隊的抉擇時刻！",
+            3: "🎤 【神鬼兒歌接唱填空】\n\n最後大決戰！主持人隨機播放經典兒歌，在關鍵歌詞時會突然消音。\n\n全場拍桌瘋狂搶答，並現場大聲把消音歌詞『接唱出來』！答對最多題的隊伍獲勝！主辦人解鎖最後線索後，準備進行 offline 實體高潮揭曉！"
         };
 
-        // 為每個網頁裝置綁定全球唯一專屬金鑰 ID (數位簽章機制，徹底阻斷自我封包重複迴圈當機)
+        // UUID 數位簽章隔離，完美防止網路迴圈堵塞
         let myId = localStorage.getItem("bs_uid") || "u_" + Math.random().toString(36).substr(2, 9);
         localStorage.setItem("bs_uid", myId);
         
@@ -402,22 +402,18 @@
                 document.getElementById("hostControlPanel").style.display = "block";
             }
 
-            // 【核心主辦人中央心跳同步機制】
-            // 只要大螢幕電腦在線，每 2 秒就會自動高頻群發一次權威名單。就算親友手機斷線或重新整理，2 秒內也絕對會被同步拉回來！
+            // 主辦人筆電發射端心跳同步（2秒群發，校正全場所有離線與重整狀態）
             setInterval(function() {
                 if (isHostMode) { pushHostMasterState(); }
             }, 2000);
         };
 
-        // ================== 全新工業級 MQTT 物聯網連線協議 ==================
         function connectToSuperMqtt() {
             try {
-                // 使用公共高並發 SSL 物聯網端點 (絕不受電信防火牆與 Rate Limit 阻擋)
                 mqttClient = mqtt.connect('wss://broker.hivemq.com:8884/mqtt');
 
                 mqttClient.on('connect', function () {
                     mqttClient.subscribe(MQTT_TOPIC);
-                    // 上線時立刻向全場索取目前數據，並同步自己的最新狀態
                     publishMqttPacket({ action: "master_sync" });
                     if (myName) { sendMyCurrentStatus(); }
                 });
@@ -425,8 +421,7 @@
                 mqttClient.on('message', function (topic, message) {
                     try {
                         let msg = JSON.parse(message.toString());
-                        // 安全攔截鎖：如果是自己發射的訊號，直接忽略，不重複執行
-                        if (msg.senderUuid === myId) return;
+                        if (msg.senderUuid === myId) return; // 數位簽章安全過濾
 
                         if (msg.action === "player_update") {
                             playersMap[msg.player.id] = msg.player;
@@ -456,11 +451,11 @@
                         }
                     } catch(e) {}
                 });
-            } catch(err) { console.log("MQTT 初始化失敗"); }
+            } catch(err) { console.log("MQTT 連線異常"); }
         }
 
         function publishMqttPacket(payload) {
-            payload.senderUuid = myId; // 注入數位簽章
+            payload.senderUuid = myId;
             if (mqttClient && mqttClient.connected) {
                 mqttClient.publish(MQTT_TOPIC, JSON.stringify(payload));
             }
@@ -636,6 +631,7 @@
         }
 
         function drawWinners(teamCode) {
+            // 過濾並取得該隊伍中名字不為空、且不是大螢幕的真實親友
             let eligiblePlayers = Object.values(playersMap).filter(p => p.team === teamCode && p.name && p.name.trim() !== "");
             
             if (eligiblePlayers.length === 0) {
@@ -668,9 +664,9 @@
             document.getElementById("winnerModal").style.display = "none";
         }
 
-        // 【終極就地洗牌歸零機制】
+        // 終極同步強制洗牌歸零
         function triggerMasterReset() {
-            if (confirm("🚨 注意！點擊後全場手機與大螢幕將同步徹底洗牌重置。確認歸零嗎？")) {
+            if (confirm("🚨 注意！點擊後全場手機與大螢幕將「一秒同步」徹底重置。確認歸零嗎？")) {
                 publishMqttPacket({ action: "trigger_clear" });
                 localStorage.clear();
                 playersMap = {};
